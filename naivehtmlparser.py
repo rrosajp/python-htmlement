@@ -15,33 +15,22 @@ class NaiveHTMLParser(HTMLParser):
 
     def __init__(self):
         self.root = None
-        self.tree = []
+        self.tree = ElementTree.TreeBuilder()
         HTMLParser.__init__(self)
 
     def feed(self, data):
         HTMLParser.feed(self, data)
+        self.root = self.tree.close()
         return self.root
 
     def handle_starttag(self, tag, attrs):
-        if len(self.tree) == 0:
-            element = ElementTree.Element(tag, dict(self.__filter_attrs(attrs)))
-            self.tree.append(element)
-            self.root = element
-        else:
-            element = ElementTree.SubElement(self.tree[-1], tag, dict(self.__filter_attrs(attrs)))
-            self.tree.append(element)
+        self.tree.start(tag, dict(self.__filter_attrs(attrs)))
 
     def handle_endtag(self, tag):
-        self.tree.pop()
-
-    def handle_startendtag(self, tag, attrs):
-        self.handle_starttag(tag, attrs)
-        self.handle_endtag(tag)
-        pass
+        self.tree.end(tag)
 
     def handle_data(self, data):
-        if self.tree:
-            self.tree[-1].text = data
+        self.tree.data(data)
 
     def get_root_element(self):
         return self.root
@@ -80,5 +69,6 @@ if __name__ == "__main__":
         print(a.get('href'))
 
     # for more information, see:
-    # http://docs.python.org/2/library/xml.etree.elementtree.html
-    # http://docs.python.org/2/library/xml.etree.elementtree.html#xpath-support
+    # https://docs.python.org/3.3/library/xml.etree.elementtree.html
+    # https://docs.python.org/3.3/library/xml.etree.elementtree.html#xpath-support
+    # https://docs.python.org/3.3/library/xml.etree.elementtree.html#treebuilder-objects
