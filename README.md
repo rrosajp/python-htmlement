@@ -20,13 +20,6 @@ You may use this code however you like.
 You may even copy-paste it into your project in order to keep the result clean and simple (a comment to this source is welcome!).
 
 
-But... wait!
------
-
-As the filename implies, this is a very naive approach to this problem.
-If you really need (or may use) a fully-fledged parsing library, [lxml](http://lxml.de/) and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) are arguably the most used.
-
-
 Example
 -----
 
@@ -43,23 +36,20 @@ html = """
 </html>
 """
 
-parser = NaiveHTMLParser()
-root = parser.feed(html)
-parser.close()
-
-# root is an xml.etree.Element and supports the ElementTree API
+# Root is an xml.etree.Element and supports the ElementTree API
 # (e.g. you may use its limited support for XPath expressions)
 
-# get title
-print(root.find('head/title').text)
+# Get title
+title = root.find('head/title').text
+print("Parsing website: %s" % title)
 
-# get all anchors
-for a in root.findall('.//a'):
-    print(a.get('href'))
+# Get all anchors
+for a in root.iterfind(".//a"):
+    print(a.get("href"))
 
-# for more information, see:
-# http://docs.python.org/2/library/xml.etree.elementtree.html
-# http://docs.python.org/2/library/xml.etree.elementtree.html#xpath-support
+# For more information, see:
+# https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
+# https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
 ```
 
 Output:
