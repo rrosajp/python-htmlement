@@ -1,7 +1,7 @@
 python-htmlparser
 =================
 
-Python 3.x HTMLParser extension with ElementTree support.
+Python HTMLParser extension with ElementTree support.
 
 
 Why another Python HTML Parser?
