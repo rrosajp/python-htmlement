@@ -45,7 +45,7 @@ root = parser.parse(html)
 # (e.g. you may use its limited support for XPath expressions)
 
 # Get title
-title = root.find('head/title').text
+title = root.find("head/title").text
 print("Parsing: %s" % title)
 
 # Get all anchors
