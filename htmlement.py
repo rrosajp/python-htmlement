@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8
 """
 The MIT License (MIT)
 
@@ -23,19 +24,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 # Python 2 compatibility
-# from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 # Standard library imports
-from xml.etree import ElementTree as Etree
-from html.parser import HTMLParser
+import warnings
 import sys
 import re
 
+# Import the faster C implementation of ElementTree whenever available
+try:
+    from xml.etree import cElementTree as Etree
+except ImportError:
+    from xml.etree import ElementTree as Etree
 
 # Check python version to set the object that can detect non unicode strings
 if sys.version_info >= (3, 0):
+    # noinspection PyCompatibility
+    from html.parser import HTMLParser
     type_string = bytes
 else:
+    # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility
+    from HTMLParser import HTMLParser
     type_string = str
 
 
@@ -52,7 +61,7 @@ class HTMLParseError(Exception):
         if self.lineno is not None:
             result += ", at line %d" % self.lineno
         if self.offset is not None:
-            result += ", column %d" % (self.offset + 1)
+            result += ", column %d" % self.offset
         return result
 
 
@@ -140,13 +149,13 @@ class HTMLement(object):
             # Atemp to find the encoding from the html source
             if encoding is None:
                 # Search for the charset attribute within the meta tag
-                charset_refind = b'<meta.*?charset="(\S+?)".*?/>|<meta.*?content=".*?charset=(\S+?)".*?/>'
-                charsets = re.findall(charset_refind, source[:source.find(b"</head>")])
-                if charsets:
-                    for charset in charsets[0]:
-                        if charset:
-                            encoding = charset
-                            break
+                charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
+                charset = re.search(charset_refind, source[:source.find(b"</head>")], re.IGNORECASE)
+                if charset:
+                    encoding = charset.group(1)
+                else:
+                    warnings.warn("Unable to determine encoding, defaulting to UTF-8", UnicodeWarning, stacklevel=2)
+                    encoding = "utf-8"
 
             # Decode the string into unicode
             source = source.decode(encoding)
@@ -282,7 +291,6 @@ class ParseHTML(HTMLParser):
         raise HTMLParseError(message, self.getpos())
 
 
-# example usage
 if __name__ == "__main__":
     html = """
     <html>
