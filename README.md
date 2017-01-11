@@ -36,12 +36,17 @@ html = """
 </html>
 """
 
+# Parse the document
+from htmlement import HTMLement
+parser = HTMLement()
+root = parser.parse(html)
+
 # Root is an xml.etree.Element and supports the ElementTree API
 # (e.g. you may use its limited support for XPath expressions)
 
 # Get title
 title = root.find('head/title').text
-print("Parsing website: %s" % title)
+print("Parsing: %s" % title)
 
 # Get all anchors
 for a in root.iterfind(".//a"):
@@ -54,7 +59,7 @@ for a in root.iterfind(".//a"):
 
 Output:
 ```
-GitHub
-https://github.com/marmelo
-https://github.com/marmelo/python-htmlparser
+Parsing: GitHub
+https://github.com/willforde
+https://github.com/willforde/python-htmlement
 ```

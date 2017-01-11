@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8
 """
 The MIT License (MIT)
 
@@ -298,12 +297,13 @@ if __name__ == "__main__":
         <title>GitHub</title>
       </head>
       <body>
-        <a href="https://github.com/marmelo">GitHub</a>
-        <a href="https://github.com/marmelo/python-htmlparser">GitHub Project</a>
+        <a href="https://github.com/willforde">GitHub</a>
+        <a href="https://github.com/willforde/python-htmlement">GitHub Project</a>
       </body>
     </html>
     """
 
+    # Parse the document
     parser = HTMLement()
     root = parser.parse(html)
 
@@ -312,7 +312,7 @@ if __name__ == "__main__":
 
     # Get title
     title = root.find('head/title').text
-    print("Parsing website: %s" % title)
+    print("Parsing: %s" % title)
 
     # Get all anchors
     for a in root.iterfind(".//a"):
