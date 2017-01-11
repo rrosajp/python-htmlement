@@ -51,10 +51,6 @@ print("Parsing: %s" % title)
 # Get all anchors
 for a in root.iterfind(".//a"):
     print(a.get("href"))
-
-# For more information, see:
-# https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
-# https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
 ```
 
 Output:
