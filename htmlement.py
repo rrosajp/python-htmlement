@@ -146,20 +146,7 @@ class HTMLement(object):
         self._filter = tree_filter
         # Convert source to unicode if not already unicode
         if isinstance(source, type_string):
-            # Atemp to find the encoding from the html source
-            if encoding is None:
-                # Search for the charset attribute within the meta tag
-                charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
-                charset = re.search(charset_refind, source[:source.find(b"</head>")], re.IGNORECASE)
-                if charset:
-                    encoding = charset.group(1)
-                else:
-                    warn_msg = "Unable to determine encoding, please specify encoding, defaulting to UTF-8"
-                    warnings.warn(warn_msg, UnicodeWarning, stacklevel=2)
-                    encoding = "utf-8"
-
-            # Decode the string into unicode
-            source = source.decode(encoding)
+            source = self._make_unicode(source, encoding)
 
         # Create temporary root element to protect from badly written sites that either
         # have no html starting tag or multiple top level elements
@@ -255,6 +242,27 @@ class HTMLement(object):
                 else:
                     self._last.text = text
             self._data = []
+
+    @staticmethod
+    def _make_unicode(source, encoding):
+        # Atemp to find the encoding from the html source
+        if encoding is None:
+            end_head_tag = source.find(b"</head>")
+            if end_head_tag:
+                # Search for the charset attribute within the meta tags
+                charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
+                charset = re.search(charset_refind, source[:end_head_tag], re.IGNORECASE)
+                if charset:
+                    encoding = charset.group(1)
+                else:
+                    warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
+                    warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+            else:
+                warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
+                warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+
+        # Decode the string into unicode
+        return source.decode(encoding if encoding else "iso-8859-1")
 
 
 class ParseHTML(HTMLParser):
