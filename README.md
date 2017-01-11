@@ -8,13 +8,13 @@ Why another Python HTML Parser?
 -----
 
 There is no HTML Parser in the Python Standard Library.
-Actually, there is the html.parser. HTMLParser that simply traverses the DOM tree and allows us to be notified as each tag is being parsed.
+Actually, there is the html.parser.HTMLParser that simply traverses the DOM tree and allows us to be notified as each tag is being parsed.
 
 Usually, when we parse HTML we want to query its elements and extract data from it.
 The most simple way to do this is to use XPath expressions.
 Python does support a simple (read limited) XPath engine inside its ElementTree module, but there is no way to parse an HTML document into XHTML in order for that library to query it.
 
-This HTML Parser extends html.parser. HTMLParser returning an xml.etree.Element instance (the root element) which natively supports the ElementTree API.
+This HTML Parser extends html.parser.HTMLParser returning an xml.etree.Element instance (the root element) which natively supports the ElementTree API.
 
 You may use this code however you like.
 You may even copy-paste it into your project in order to keep the result clean and simple (a comment to this source is welcome!).
