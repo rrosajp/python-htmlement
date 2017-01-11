@@ -1,4 +1,4 @@
-python-htmlparser
+python-htmlement
 =================
 
 Python HTMLParser extension with ElementTree support.
