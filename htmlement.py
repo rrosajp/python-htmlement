@@ -23,6 +23,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+# TODO: Fix TreeFilter not setting new root element when first match is found
+# TODO: Change TreeFilter to allow setting only tag and no attrs
+
 # Python 2 compatibility
 from __future__ import unicode_literals
 
@@ -66,36 +69,37 @@ class HTMLParseError(Exception):
 
 
 class TreeFilter(object):
-    def __init__(self, tag, attrs):
+    def __init__(self, tag, attrs=None):
         # Split attributes into wanted and unwanted attributes
         self._unw_attrs = [attrs.pop(key) for key, value in attrs.items() if value is False] if attrs else []
         self.found = False
-        self.attrs = attrs
+        self.attrs = attrs if attrs else {}
         self.tag = tag
 
     def search(self, tag, attrs):
         # If we have required attrs to match then search all attrs for wanted attrs
         # And also check that we do not have any attrs that are unwanted
-        if tag == self.tag and attrs and (self.attrs or self._unw_attrs):
-            wanted_attrs = self.attrs.copy()
-            unwanted_attrs = self._unw_attrs
-            for key, value in attrs:
-                # Check for unwanted attrs
-                if key in unwanted_attrs:
-                    return False
+        if tag == self.tag:
+            if attrs and (self.attrs or self._unw_attrs):
+                wanted_attrs = self.attrs.copy()
+                unwanted_attrs = self._unw_attrs
+                for key, value in attrs:
+                    # Check for unwanted attrs
+                    if key in unwanted_attrs:
+                        return False
 
-                # Check for wanted attrs
-                elif key in wanted_attrs:
-                    c_value = wanted_attrs[key]
-                    if c_value == value or c_value is True:
-                        # Remove this attribute from the wanted dict of attributes
-                        # to indicate that this attribute has been found
-                        del wanted_attrs[key]
+                    # Check for wanted attrs
+                    elif key in wanted_attrs:
+                        c_value = wanted_attrs[key]
+                        if c_value == value or c_value is True:
+                            # Remove this attribute from the wanted dict of attributes
+                            # to indicate that this attribute has been found
+                            del wanted_attrs[key]
 
-            # If wanted_attrs is now empty then all attributes must have been found
-            if not wanted_attrs:
-                self.found = True
-                return True
+                # If wanted_attrs is now empty then all attributes must have been found
+                if not wanted_attrs:
+                    self.found = True
+                    return True
 
         # Unable to find required section
         return False
@@ -193,7 +197,7 @@ class HTMLement(object):
                 self._flush()
                 self._tail = 1
                 self._last = elem = _elem.pop()
-                if elem is _root:
+                if _root and elem is _root:
                     raise EOFError
 
             # If the previous element is what we actually have then the expected element was not
@@ -203,7 +207,7 @@ class HTMLement(object):
                 self._tail = 1
                 for i in range(2):
                     self._last = elem = _elem.pop()
-                    if elem is _root:
+                    if _root and elem is _root:
                         raise EOFError
             else:
                 # Unable to match the tag to an element, ignoring it
