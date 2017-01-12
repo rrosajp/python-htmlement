@@ -110,14 +110,14 @@ def example_complex():
     A filter will be used to extract the main talks div element
 
     >>> example_complex()
-    Image = /presentations/8e7189e67d7448f3841f5802058a9a88/thumb_slide_0.jpg
-    Url = /pycon2016/kelsey-gilmore-innis-seriously-strong-security-on-a-shoestring
-    Title = Kelsey Gilmore-Innis - Seriously Strong Security on a Shoestring
+    Image = /presentations/c7f1fbb5d03a409d9de8abb5238d6a68/thumb_slide_0.jpg
+    Url = /pycon2016/alex-martelli-exception-and-error-handling-in-python-2-and-python-3
+    Title = Alex Martelli - Exception and error handling in Python 2 and Python 3
     Date = Jun 1, 2016
 
     Image = /presentations/eef8ffe5b6784f7cb84948cf866b2608/thumb_slide_0.jpg
-    Url = /pycon2016/manuel-ebert-putting-1-million-new-words-into-the-dictionary
-    Title = Manuel Ebert - Putting 1 million new words into the dictionary
+    Url = /presentations/518cae54da12460e895163d809e25933/thumb_slide_0.jpg
+    Title = Jake Vanderplas - Statistics for Hackers
     Date = May 29, 2016
 
     Image = /presentations/8b3ee51b5fcc4a238c4cb4b7787979ac/thumb_slide_0.jpg
