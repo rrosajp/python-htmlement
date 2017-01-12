@@ -128,7 +128,7 @@ def example_complex():
     html = """
     <html>
       <head>
-        <title>Coffee shop</title>
+        <title>PyCon 2016</title>
       </head>
       <body>
         <div class="main">
@@ -198,7 +198,7 @@ def example_complex():
         print("Title = {}".format(title))
 
         # Fetch date
-        date = talk.find(".//p").text
+        date = talk.find("./div/p").text
         print("Date = {}".format(date))
         print("")
 
