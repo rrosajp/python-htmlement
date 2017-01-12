@@ -204,7 +204,7 @@ class HTMLement(object):
 
             # If the previous element is what we actually have then the expected element was not
             # properly closed so we must close that before closing what we have now
-            elif _elem[-2].tag == tag:
+            elif len(_elem) >= 2 and _elem[-2].tag == tag:
                 self._flush()
                 self._tail = 1
                 for i in range(2):
