@@ -23,8 +23,6 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-# TODO: Fix TreeFilter not setting new root element when first match is found
-
 # Python 2 compatibility
 from __future__ import unicode_literals
 
@@ -99,7 +97,6 @@ class TreeFilter(object):
 
                     # If wanted_attrs is now empty then all attributes must have been found
                     if not wanted_attrs:
-                        self.found = True
                         return True
             else:
                 # We only need to match tag
@@ -190,6 +187,7 @@ class HTMLement(object):
             # Set this element as the root element when the filter search matches
             if not _filter:
                 self._root = elem
+                _filter.found = True
 
     def end(self, tag):
         # Only process end tags when we have no filter or that the filter has been matched
