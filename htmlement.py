@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 # TODO: Fix TreeFilter not setting new root element when first match is found
-# TODO: Change TreeFilter to allow setting only tag and no attrs
 
 # Python 2 compatibility
 from __future__ import unicode_literals
@@ -77,29 +76,34 @@ class TreeFilter(object):
         self.tag = tag
 
     def search(self, tag, attrs):
-        # If we have required attrs to match then search all attrs for wanted attrs
-        # And also check that we do not have any attrs that are unwanted
+        # Only search when the tag matches
         if tag == self.tag:
-            if attrs and (self.attrs or self._unw_attrs):
-                wanted_attrs = self.attrs.copy()
-                unwanted_attrs = self._unw_attrs
-                for key, value in attrs:
-                    # Check for unwanted attrs
-                    if key in unwanted_attrs:
-                        return False
+            # If we have required attrs to match then search all attrs for wanted attrs
+            # And also check that we do not have any attrs that are unwanted
+            if self.attrs or self._unw_attrs:
+                if attrs:
+                    wanted_attrs = self.attrs.copy()
+                    unwanted_attrs = self._unw_attrs
+                    for key, value in attrs:
+                        # Check for unwanted attrs
+                        if key in unwanted_attrs:
+                            return False
 
-                    # Check for wanted attrs
-                    elif key in wanted_attrs:
-                        c_value = wanted_attrs[key]
-                        if c_value == value or c_value is True:
-                            # Remove this attribute from the wanted dict of attributes
-                            # to indicate that this attribute has been found
-                            del wanted_attrs[key]
+                        # Check for wanted attrs
+                        elif key in wanted_attrs:
+                            c_value = wanted_attrs[key]
+                            if c_value == value or c_value is True:
+                                # Remove this attribute from the wanted dict of attributes
+                                # to indicate that this attribute has been found
+                                del wanted_attrs[key]
 
-                # If wanted_attrs is now empty then all attributes must have been found
-                if not wanted_attrs:
-                    self.found = True
-                    return True
+                    # If wanted_attrs is now empty then all attributes must have been found
+                    if not wanted_attrs:
+                        self.found = True
+                        return True
+            else:
+                # We only need to match tag
+                return True
 
         # Unable to find required section
         return False
