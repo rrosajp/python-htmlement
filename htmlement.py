@@ -165,6 +165,7 @@ class HTMLement(object):
             self._parser.feed(source)
         except EOFError:
             self.finished = True
+            self._parser.reset()
 
     def close(self):
         # Close the tree builder and return the root element that is returned by the treebuilder
