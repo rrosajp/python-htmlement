@@ -126,15 +126,59 @@ class HTMLement(object):
     @see https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
     @see https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
     """
-    def __init__(self, html_parser=None, element_factory=None):
-        self._tail = None  # true if we're after an end tag
-        self._last = None  # last element
+    def __init__(self, tag=None, attrs=None):
+        self._parser = ParseHTML(tag, attrs)
+        self.finished = False
+
+    def feed(self, source, encoding=None):
+        # Skip feeding data into parser if we already have what we want
+        if self.finished is True:
+            return None
+
+        # Convert source to unicode if not already unicode
+        if isinstance(source, type_string):
+            source = self._make_unicode(source, encoding)
+
+        # Parse the html document
+        try:
+            self._parser.feed(source)
+        except EOFError:
+            self.finished = True
+
+    def close(self):
+        # Close the tree builder and return the root element that is returned by the treebuilder
+        return self._parser.close()
+
+    @staticmethod
+    def _make_unicode(source, encoding):
+        # Atemp to find the encoding from the html source
+        if encoding is None:
+            end_head_tag = source.find(b"</head>")
+            if end_head_tag:
+                # Search for the charset attribute within the meta tags
+                charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
+                charset = re.search(charset_refind, source[:end_head_tag], re.IGNORECASE)
+                if charset:
+                    encoding = charset.group(1)
+                else:
+                    warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
+                    warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+            else:
+                warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
+                warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+
+        # Decode the string into unicode
+        return source.decode(encoding if encoding else "iso-8859-1")
+
+
+class ParseHTML(HTMLParser):
+    def __init__(self, tag, attrs):
+        # Initiate HTMLParser
+        HTMLParser.__init__(self)
         self._root = None  # root element
         self._data = []  # data collector
-        self._elem = []  # element stack
-        self._parser = html_parser if html_parser else ParseHTML
-        self._factory = element_factory if element_factory else Etree.Element
-        self._filter = True
+        self._factory = Etree.Element
+        self._filter = TreeFilter(tag, attrs) if tag else True
 
         # Some tags in html do not require closing tags so thoes tags will need to be auto closed (Void elements)
         # Refer to: https://www.w3.org/TR/html/syntax.html#void-elements
@@ -147,24 +191,14 @@ class HTMLement(object):
                                  "rect", "circle", "ellipse", "line", "polyline", "polygon",
                                  "path", "stop", "use", "image", "animatetransform"))
 
-    def parse(self, source, encoding=None, tree_filter=True):
-        self._filter = tree_filter
-        # Convert source to unicode if not already unicode
-        if isinstance(source, type_string):
-            source = self._make_unicode(source, encoding)
-
         # Create temporary root element to protect from badly written sites that either
         # have no html starting tag or multiple top level elements
         elem = self._factory("html")
-        self._elem.append(elem)
+        self._elem = [elem]
         self._last = elem
         self._tail = 0
 
-        # Parse the html document
-        htmlparser = self._parser(self)
-        return htmlparser.feed(source)
-
-    def start(self, tag, attrs, self_closing=False):
+    def handle_starttag(self, tag, attrs, self_closing=False):
         _filter = self._filter
         # Add tag element to tree if we have no filter or that the filter matches
         if _filter or _filter.search(tag, attrs):
@@ -189,7 +223,10 @@ class HTMLement(object):
                 self._root = elem
                 _filter.found = True
 
-    def end(self, tag):
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs, self_closing=True)
+
+    def handle_endtag(self, tag):
         # Only process end tags when we have no filter or that the filter has been matched
         if self._filter and tag not in self._voids:
             _elem = self._elem
@@ -215,6 +252,17 @@ class HTMLement(object):
                 # Unable to match the tag to an element, ignoring it
                 return None
 
+    def handle_data(self, data):
+        data = data.strip()
+        if data and self._filter:
+            self._data.append(data)
+
+    def handle_comment(self, data):
+        data = data.strip()
+        if data and self._filter:
+            elem = Etree.Comment(data)
+            self._elem[-1].append(elem)
+
     def close(self):
         self._flush()
         if self._root is not None:
@@ -230,14 +278,8 @@ class HTMLement(object):
                 # Proper root found
                 return proper_root
 
-    def data(self, data):
-        if data and self._filter:
-            self._data.append(data)
-
-    def comment(self, comment):
-        if comment and self._filter:
-            elem = Etree.Comment(comment)
-            self._elem[-1].append(elem)
+    def error(self, message):
+        raise HTMLParseError(message, self.getpos())
 
     def _flush(self):
         if self._data:
@@ -248,59 +290,3 @@ class HTMLement(object):
                 else:
                     self._last.text = text
             self._data = []
-
-    @staticmethod
-    def _make_unicode(source, encoding):
-        # Atemp to find the encoding from the html source
-        if encoding is None:
-            end_head_tag = source.find(b"</head>")
-            if end_head_tag:
-                # Search for the charset attribute within the meta tags
-                charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
-                charset = re.search(charset_refind, source[:end_head_tag], re.IGNORECASE)
-                if charset:
-                    encoding = charset.group(1)
-                else:
-                    warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
-                    warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
-            else:
-                warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
-                warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
-
-        # Decode the string into unicode
-        return source.decode(encoding if encoding else "iso-8859-1")
-
-
-class ParseHTML(HTMLParser):
-    def __init__(self, tree_builder):
-        # Initiate HTMLParser
-        HTMLParser.__init__(self)
-        self._tree = tree_builder
-
-    def feed(self, source):
-        try:
-            # Parse the document
-            HTMLParser.feed(self, source)
-        except EOFError:
-            pass
-
-        # Close the tree builder and return the root element that is returned by the treebuilder
-        return self._tree.close()
-
-    def handle_starttag(self, tag, attrs):
-        self._tree.start(tag, attrs, self_closing=False)
-
-    def handle_startendtag(self, tag, attrs):
-        self._tree.start(tag, attrs, self_closing=True)
-
-    def handle_endtag(self, tag):
-        self._tree.end(tag)
-
-    def handle_data(self, data):
-        self._tree.data(data.strip())
-
-    def handle_comment(self, data):
-        self._tree.comment(data.strip())
-
-    def error(self, message):
-        raise HTMLParseError(message, self.getpos())

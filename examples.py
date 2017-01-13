@@ -5,7 +5,7 @@ For more information, see:
 @see https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
 """
 from __future__ import print_function, unicode_literals
-from htmlement import HTMLement, TreeFilter
+from htmlement import HTMLement
 
 
 def example_simple():
@@ -32,7 +32,8 @@ def example_simple():
 
     # Parse the document
     parser = HTMLement()
-    root = parser.parse(html)
+    parser.feed(html)
+    root = parser.close()
 
     # Root is an xml.etree.Element and supports the ElementTree API
     # (e.g. you may use its limited support for XPath expressions)
@@ -85,9 +86,9 @@ def example_filter():
     """
 
     # Parse the document
-    parser = HTMLement()
-    menu_filter = TreeFilter("ul", attrs={"class": "menu"})
-    root = parser.parse(html, tree_filter=menu_filter)
+    parser = HTMLement("ul", attrs={"class": "menu"})
+    parser.feed(html)
+    root = parser.close()
 
     # Root should now be a 'ul' xml.etree.Element with all it's child elements available
     # All other elements have been ignored. Way faster to parse.
@@ -180,9 +181,9 @@ def example_complex():
     """
 
     # Parse the document
-    parser = HTMLement()
-    talks_filter = TreeFilter("div", attrs={"class": "talks"})
-    root = parser.parse(html, tree_filter=talks_filter)
+    parser = HTMLement("div", attrs={"class": "talks"})
+    parser.feed(html)
+    root = parser.close()
 
     # Extract all div tags with class of talk
     for talk in root.iterfind("./div[@class='talk']"):

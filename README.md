@@ -39,7 +39,8 @@ html = """
 # Parse the document
 from htmlement import HTMLement
 parser = HTMLement()
-root = parser.parse(html)
+parser.feed(html)
+root = parser.close()
 
 # Root is an xml.etree.Element and supports the ElementTree API
 # (e.g. you may use its limited support for XPath expressions)
