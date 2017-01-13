@@ -193,7 +193,7 @@ class ParseHTML(HTMLParser):
                 self._flush()
                 self._tail = 1
                 self._last = elem = _elem.pop()
-                if _root and elem is _root:
+                if elem is _root:
                     raise EOFError
 
             # If the previous element is what we actually have then the expected element was not
@@ -203,7 +203,7 @@ class ParseHTML(HTMLParser):
                 self._tail = 1
                 for i in range(2):
                     self._last = elem = _elem.pop()
-                    if _root and elem is _root:
+                    if elem is _root:
                         raise EOFError
             else:
                 # Unable to match the tag to an element, ignoring it
