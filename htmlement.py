@@ -48,6 +48,27 @@ else:
     type_string = str
 
 
+def _make_unicode(source, encoding):
+    # Atemp to find the encoding from the html source
+    if encoding is None:
+        end_head_tag = source.find(b"</head>")
+        if end_head_tag:
+            # Search for the charset attribute within the meta tags
+            charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
+            charset = re.search(charset_refind, source[:end_head_tag], re.IGNORECASE)
+            if charset:
+                encoding = charset.group(1)
+            else:
+                warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
+                warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+        else:
+            warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
+            warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+
+    # Decode the string into unicode
+    return source.decode(encoding if encoding else "iso-8859-1")
+
+
 # Required for raiseing HTMLParseError in python3, emulates python2
 class HTMLParseError(Exception):
     """Exception raised for all parse errors."""
@@ -137,7 +158,7 @@ class HTMLement(object):
 
         # Convert source to unicode if not already unicode
         if isinstance(source, type_string):
-            source = self._make_unicode(source, encoding)
+            source = _make_unicode(source, encoding)
 
         # Parse the html document
         try:
@@ -148,27 +169,6 @@ class HTMLement(object):
     def close(self):
         # Close the tree builder and return the root element that is returned by the treebuilder
         return self._parser.close()
-
-    @staticmethod
-    def _make_unicode(source, encoding):
-        # Atemp to find the encoding from the html source
-        if encoding is None:
-            end_head_tag = source.find(b"</head>")
-            if end_head_tag:
-                # Search for the charset attribute within the meta tags
-                charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
-                charset = re.search(charset_refind, source[:end_head_tag], re.IGNORECASE)
-                if charset:
-                    encoding = charset.group(1)
-                else:
-                    warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
-                    warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
-            else:
-                warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
-                warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
-
-        # Decode the string into unicode
-        return source.decode(encoding if encoding else "iso-8859-1")
 
 
 class ParseHTML(HTMLParser):
