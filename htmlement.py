@@ -86,55 +86,6 @@ class HTMLParseError(Exception):
         return result
 
 
-class TreeFilter(object):
-    def __init__(self, tag, attrs=None):
-        # Split attributes into wanted and unwanted attributes
-        self._unw_attrs = [attrs.pop(key) for key, value in attrs.items() if value is False] if attrs else []
-        self.found = False
-        self.attrs = attrs if attrs else {}
-        self.tag = tag
-
-    def search(self, tag, attrs):
-        # Only search when the tag matches
-        if tag == self.tag:
-            # If we have required attrs to match then search all attrs for wanted attrs
-            # And also check that we do not have any attrs that are unwanted
-            if self.attrs or self._unw_attrs:
-                if attrs:
-                    wanted_attrs = self.attrs.copy()
-                    unwanted_attrs = self._unw_attrs
-                    for key, value in attrs:
-                        # Check for unwanted attrs
-                        if key in unwanted_attrs:
-                            return False
-
-                        # Check for wanted attrs
-                        elif key in wanted_attrs:
-                            c_value = wanted_attrs[key]
-                            if c_value == value or c_value is True:
-                                # Remove this attribute from the wanted dict of attributes
-                                # to indicate that this attribute has been found
-                                del wanted_attrs[key]
-
-                    # If wanted_attrs is now empty then all attributes must have been found
-                    if not wanted_attrs:
-                        return True
-            else:
-                # We only need to match tag
-                return True
-
-        # Unable to find required section
-        return False
-
-    # Python 3
-    def __bool__(self):
-        return self.found
-
-    # Python 2
-    def __nonzero__(self):
-        return self.found
-
-
 class HTMLement(object):
     """
     Python HTMLParser extension with ElementTree support.
@@ -179,7 +130,12 @@ class ParseHTML(HTMLParser):
         self._root = None  # root element
         self._data = []  # data collector
         self._factory = Etree.Element
-        self._filter = TreeFilter(tag, attrs) if tag else True
+
+        # Split attributes into wanted and unwanted attributes
+        self._unw_attrs = [attrs.pop(key) for key, value in attrs.items() if value is False] if attrs else []
+        self.attrs = attrs if attrs else {}
+        self.enabled = not tag
+        self.tag = tag
 
         # Some tags in html do not require closing tags so thoes tags will need to be auto closed (Void elements)
         # Refer to: https://www.w3.org/TR/html/syntax.html#void-elements
@@ -200,9 +156,9 @@ class ParseHTML(HTMLParser):
         self._tail = 0
 
     def handle_starttag(self, tag, attrs, self_closing=False):
-        _filter = self._filter
+        enabled = self.enabled
         # Add tag element to tree if we have no filter or that the filter matches
-        if _filter or _filter.search(tag, attrs):
+        if enabled or self._search(tag, attrs):
             # Convert attrs to dictionary
             attrs = dict(attrs) if attrs else {}
             self._flush()
@@ -220,16 +176,16 @@ class ParseHTML(HTMLParser):
                 self._tail = 0
 
             # Set this element as the root element when the filter search matches
-            if not _filter:
+            if not enabled:
                 self._root = elem
-                _filter.found = True
+                self.enabled = True
 
     def handle_startendtag(self, tag, attrs):
         self.handle_starttag(tag, attrs, self_closing=True)
 
     def handle_endtag(self, tag):
         # Only process end tags when we have no filter or that the filter has been matched
-        if self._filter and tag not in self._voids:
+        if self.enabled and tag not in self._voids:
             _elem = self._elem
             _root = self._root
             # Check that the closing tag is what's actualy expected
@@ -255,12 +211,12 @@ class ParseHTML(HTMLParser):
 
     def handle_data(self, data):
         data = data.strip()
-        if data and self._filter:
+        if data and self.enabled:
             self._data.append(data)
 
     def handle_comment(self, data):
         data = data.strip()
-        if data and self._filter:
+        if data and self.enabled:
             elem = Etree.Comment(data)
             self._elem[-1].append(elem)
 
@@ -291,3 +247,35 @@ class ParseHTML(HTMLParser):
                 else:
                     self._last.text = text
             self._data = []
+
+    def _search(self, tag, attrs):
+        # Only search when the tag matches
+        if tag == self.tag:
+            # If we have required attrs to match then search all attrs for wanted attrs
+            # And also check that we do not have any attrs that are unwanted
+            if self.attrs or self._unw_attrs:
+                if attrs:
+                    wanted_attrs = self.attrs.copy()
+                    unwanted_attrs = self._unw_attrs
+                    for key, value in attrs:
+                        # Check for unwanted attrs
+                        if key in unwanted_attrs:
+                            return False
+
+                        # Check for wanted attrs
+                        elif key in wanted_attrs:
+                            c_value = wanted_attrs[key]
+                            if c_value == value or c_value is True:
+                                # Remove this attribute from the wanted dict of attributes
+                                # to indicate that this attribute has been found
+                                del wanted_attrs[key]
+
+                    # If wanted_attrs is now empty then all attributes must have been found
+                    if not wanted_attrs:
+                        return True
+            else:
+                # We only need to match tag
+                return True
+
+        # Unable to find required section
+        return False
