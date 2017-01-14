@@ -49,7 +49,7 @@ else:
 __all__ = ["HTMLement", "HTMLParseError", "fromstring", "fromstringlist", "make_unicode"]
 
 
-def fromstring(source, tag=None, attrs=None):
+def fromstring(text, tag=None, attrs=None):
     """
     Convenience function to parse html source from string
 
@@ -57,7 +57,7 @@ def fromstring(source, tag=None, attrs=None):
     Refer to :class:'HTMLement' for all other arguments
     """
     parser = HTMLement(tag, attrs)
-    parser.feed(source)
+    parser.feed(text)
     return parser.close()
 
 
