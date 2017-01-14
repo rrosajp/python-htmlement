@@ -51,9 +51,9 @@ __all__ = ["HTMLement", "HTMLParseError", "fromstring", "fromstringlist", "make_
 
 def fromstring(text, tag=None, attrs=None):
     """
-    Convenience function to parse html source from string
+    Parses an HTML Source into an element tree from a string.
 
-    *source* is a string containing html data,
+    *text* is a string containing html data,
     Refer to :class:'HTMLement' for all other arguments
     """
     parser = HTMLement(tag, attrs)
@@ -63,7 +63,7 @@ def fromstring(text, tag=None, attrs=None):
 
 def fromstringlist(sequence, tag=None, attrs=None):
     """
-    Convenience function to parse html source from a sequence of strings
+    Parses an HTML Source into an element tree from a sequence of strings.
 
     *sequence* is a sequence of strings containing html data,
     Refer to :class:'HTMLement' for all other arguments
