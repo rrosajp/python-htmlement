@@ -45,6 +45,34 @@ else:
     # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
 
+# When using 'from htmlement import *'
+__all__ = ["HTMLement", "HTMLParseError", "fromstring", "fromstringlist", "make_unicode"]
+
+
+def fromstring(source, tag=None, attrs=None):
+    """
+    Convenience function to parse html source from string
+
+    *source* is a string containing html data,
+    Refer to :class:'HTMLement' for all other arguments
+    """
+    parser = HTMLement(tag, attrs)
+    parser.feed(source)
+    return parser.close()
+
+
+def fromstringlist(sequence, tag=None, attrs=None):
+    """
+    Convenience function to parse html source from a sequence of strings
+
+    *sequence* is a sequence of strings containing html data,
+    Refer to :class:'HTMLement' for all other arguments
+    """
+    parser = HTMLement(tag, attrs)
+    for text in sequence:
+        parser.feed(text)
+    return parser.close()
+
 
 def make_unicode(source, encoding=None, default_encoding="iso-8859-1"):
     """
