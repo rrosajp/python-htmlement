@@ -176,6 +176,7 @@ class ParseHTML(HTMLParser):
     def __init__(self, tag, attrs):
         # Initiate HTMLParser
         HTMLParser.__init__(self)
+        self.convert_charrefs = True
         self._root = None  # root element
         self._data = []  # data collector
         self._factory = Etree.Element
