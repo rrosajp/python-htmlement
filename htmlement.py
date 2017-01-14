@@ -41,16 +41,36 @@ except ImportError:
 if sys.version_info >= (3, 0):
     # noinspection PyCompatibility
     from html.parser import HTMLParser
-    type_string = bytes
 else:
     # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
-    type_string = str
 
 
-def _make_unicode(source, encoding):
-    # Atemp to find the encoding from the html source
-    if encoding is None:
+def make_unicode(source, encoding=None, default_encoding="iso-8859-1"):
+    """
+    Turn's html source into unicode if not already unicode.
+
+    If source is not unicode and no encoding is specified then the encoding
+    will be extracted from the html source meta tag if available.
+    Will default to iso-8859-1 if unable to find encoding.
+
+    Parameters
+    ----------
+    source : basestring
+        The html source data
+
+    encoding : str, optional
+        The encoding used to convert html source to unicode
+
+    default_encoding : str, optional(default="iso-8859-1")
+        The default encoding to use if no encoding was specified and
+        was unable to extract the encoding from the html source.
+    """
+    if not isinstance(source, bytes):
+        return source
+
+    elif encoding is None:
+        # Atemp to find the encoding from the html source
         end_head_tag = source.find(b"</head>")
         if end_head_tag:
             # Search for the charset attribute within the meta tags
@@ -59,14 +79,14 @@ def _make_unicode(source, encoding):
             if charset:
                 encoding = charset.group(1)
             else:
-                warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
-                warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+                warn_msg = "Unable to determine encoding, defaulting to {}".format(default_encoding)
+                warnings.warn(warn_msg, UnicodeWarning, stacklevel=1)
         else:
-            warn_msg = "Unable to determine encoding, please specify encoding, defaulting to iso-8859-1"
-            warnings.warn(warn_msg, UnicodeWarning, stacklevel=3)
+            warn_msg = "Unable to determine encoding, defaulting to {}".format(default_encoding)
+            warnings.warn(warn_msg, UnicodeWarning, stacklevel=1)
 
     # Decode the string into unicode
-    return source.decode(encoding if encoding else "iso-8859-1")
+    return source.decode(encoding if encoding else default_encoding)
 
 
 # Required for raiseing HTMLParseError in python3, emulates python2
@@ -102,14 +122,15 @@ class HTMLement(object):
         self._parser = ParseHTML(tag, attrs)
         self.finished = False
 
-    def feed(self, source, encoding=None):
+    def feed(self, source):
+        """Feeds data to the parser. data is unicode data."""
         # Skip feeding data into parser if we already have what we want
         if self.finished is True:
             return None
 
-        # Convert source to unicode if not already unicode
-        if isinstance(source, type_string):
-            source = _make_unicode(source, encoding)
+        # Make sure that we have unicode before continuing
+        if isinstance(source, bytes):
+            raise ValueError("HTML source must be unicode not string. Please feed me unicode")
 
         # Parse the html document
         try:
