@@ -237,7 +237,13 @@ class ParseHTML(HTMLParser):
         self._last = elem
         self._tail = 0
 
-    def handle_starttag(self, tag, attrs, self_closing=False):
+    def handle_starttag(self, tag, attrs):
+        self._handle_starttag(tag, attrs, self_closing=tag in self._voids)
+
+    def handle_startendtag(self, tag, attrs):
+        self._handle_starttag(tag, attrs, self_closing=True)
+
+    def _handle_starttag(self, tag, attrs, self_closing=False):
         enabled = self.enabled
         # Add tag element to tree if we have no filter or that the filter matches
         if enabled or self._search(tag, attrs):
@@ -251,7 +257,7 @@ class ParseHTML(HTMLParser):
             self._last = elem
 
             # Only append the element to the list of elements if it's not a self closing element
-            if self_closing or tag in self._voids:
+            if self_closing:
                 self._tail = 1
             else:
                 self._elem.append(elem)
@@ -261,9 +267,6 @@ class ParseHTML(HTMLParser):
             if not enabled:
                 self._root = elem
                 self.enabled = True
-
-    def handle_startendtag(self, tag, attrs):
-        self.handle_starttag(tag, attrs, self_closing=True)
 
     def handle_endtag(self, tag):
         # Only process end tags when we have no filter or that the filter has been matched
