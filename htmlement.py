@@ -283,7 +283,7 @@ class ParseHTML(HTMLParser):
             elif len(_elem) >= 2 and _elem[-2].tag == tag:
                 self._flush()
                 self._tail = 1
-                for i in range(2):
+                for _ in range(2):
                     self._last = elem = _elem.pop()
                     if elem is _root:
                         raise EOFError
