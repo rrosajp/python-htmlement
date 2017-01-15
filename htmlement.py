@@ -74,6 +74,38 @@ def fromstringlist(sequence, tag=None, attrs=None):
     return parser.close()
 
 
+def parse(source, tag=None, attrs=None):
+    """
+    Load external HTML document into element tree.
+
+    *source* is a file name or file object
+    """
+    # Assume that source is a file pointer if no read methods is found
+    if hasattr(source, "read"):
+        source = open(source, "rb")
+        close_source = True
+    else:
+        close_source = False
+
+    try:
+        parser = HTMLement(tag, attrs)
+        while True:
+            # Read in 64k at a time
+            data = source.read(65536)
+            if not data:
+                break
+
+            # Feed the parser
+            parser.feed(data)
+
+        # Return the root element
+        return parser.close()
+
+    finally:
+        if close_source:
+            source.close()
+
+
 def make_unicode(source, encoding=None, default_encoding="iso-8859-1"):
     """
     Turn's html source into unicode if not already unicode.
