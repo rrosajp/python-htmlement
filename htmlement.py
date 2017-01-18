@@ -33,8 +33,8 @@ def fromstring(text, tag=None, attrs=None):
     Parses an HTML document from a string into an element tree.
 
     :param str text: The HTML document to parse.
-    :param str tag: @see :class:`HTMLement`.
-    :param dict attrs: @see :class:`HTMLement`.
+    :param str tag: see :class:`HTMLement`.
+    :param dict attrs: see :class:`HTMLement`.
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
@@ -51,8 +51,8 @@ def fromstringlist(sequence, tag=None, attrs=None):
     Parses an HTML document from a sequence of html segments into an element tree.
 
     :param list sequence: A sequence of HTML segments to parse.
-    :param str tag: @see :class:`HTMLement`.
-    :param dict attrs: @see :class:`HTMLement`.
+    :param str tag: see :class:`HTMLement`.
+    :param dict attrs: see :class:`HTMLement`.
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
@@ -70,8 +70,8 @@ def parse(source, tag=None, attrs=None):
     Load an external HTML document into element tree.
 
     :param source: A filename or file object containing HTML data.
-    :param str tag: @see :class:`HTMLement`.
-    :param dict attrs: @see :class:`HTMLement`.
+    :param str tag: see :class:`HTMLement`.
+    :param dict attrs: see :class:`HTMLement`.
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
