@@ -23,55 +23,59 @@ if sys.version_info >= (3, 0):
 else:
     # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
+    from codecs import open
 
-__all__ = ["HTMLement", "fromstring", "fromstringlist", "parse", "make_unicode", "HTMLParseError"]
+__all__ = ["HTMLement", "fromstring", "fromstringlist", "parse", "HTMLParseError"]
 __version__ = "0.1"
 
 
-def fromstring(text, tag=None, attrs=None):
+def fromstring(text, tag=None, attrs=None, encoding=None):
     """
     Parses an HTML document from a string into an element tree.
 
-    :param str text: The HTML document to parse.
-    :param str tag: see :class:`HTMLement`.
-    :param dict attrs: see :class:`HTMLement`.
+    :param str, bytes text: The HTML document to parse.
+    :param str tag: (optional) see :class:`HTMLement`.
+    :param dict attrs: (optional) see :class:`HTMLement`.
+    :param str encoding: (optional) The encoding used for *text*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises HTMLParseError: If parsing of HTML document fails.
     """
-    parser = HTMLement(tag, attrs)
+    parser = HTMLement(tag, attrs, encoding)
     parser.feed(text)
     return parser.close()
 
 
-def fromstringlist(sequence, tag=None, attrs=None):
+def fromstringlist(sequence, tag=None, attrs=None, encoding=None):
     """
     Parses an HTML document from a sequence of html segments into an element tree.
 
     :param list sequence: A sequence of HTML segments to parse.
-    :param str tag: see :class:`HTMLement`.
-    :param dict attrs: see :class:`HTMLement`.
+    :param str tag: (optional) see :class:`HTMLement`.
+    :param dict attrs: (optional) see :class:`HTMLement`.
+    :param str encoding: (optional) The encoding used for each segment within *sequence*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises HTMLParseError: If parsing of HTML document fails.
     """
-    parser = HTMLement(tag, attrs)
+    parser = HTMLement(tag, attrs, encoding)
     for text in sequence:
         parser.feed(text)
     return parser.close()
 
 
-def parse(source, tag=None, attrs=None):
+def parse(source, tag=None, attrs=None, encoding=None):
     """
     Load an external HTML document into element tree.
 
     :param source: A filename or file object containing HTML data.
-    :param str tag: see :class:`HTMLement`.
-    :param dict attrs: see :class:`HTMLement`.
+    :param str tag: (optional) see :class:`HTMLement`.
+    :param dict attrs: (optional) see :class:`HTMLement`.
+    :param str encoding: (optional) The encoding used for *sequence*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
@@ -80,13 +84,13 @@ def parse(source, tag=None, attrs=None):
     """
     # Assume that source is a file pointer if no read methods is found
     if hasattr(source, "read"):
-        source = open(source, "rb")
+        source = open(source, "rb", encoding=encoding)
         close_source = True
     else:
         close_source = False
 
     try:
-        parser = HTMLement(tag, attrs)
+        parser = HTMLement(tag, attrs, encoding)
         while True:
             # Read in 64k at a time
             data = source.read(65536)
@@ -102,51 +106,6 @@ def parse(source, tag=None, attrs=None):
     finally:
         if close_source:
             source.close()
-
-
-def make_unicode(source, encoding=None, default_encoding="iso-8859-1"):
-    """
-    Convert *source* from type bytes to type str, if not already str.
-
-    If *source* is not of type *str* and *encoding* was not specified then the encoding
-    will be extracted from *source* using meta tags if available.
-    Will default to *default_encoding* if unable to find *encoding*.
-
-    :param bytes source: The html document.
-    :param str encoding: (optional) The encoding used to convert *source* to *str*.
-    :param str default_encoding: (optional) Default encoding to use when unable to extract the encoding from *source*.
-
-    :return: HTML data decoded into str(unicode).
-    :rtype: str
-
-    :raises UnicodeDecodeError: If decoding of *source* fails.
-    :raises ValueError: If *source* is not of type *bytes* or *str*.
-    """
-    if isinstance(source, basestring):
-        if not isinstance(source, bytes):
-            # Already str(unicode)
-            return source
-    else:
-        raise ValueError("Source is not of valid type bytes or str")
-
-    if encoding is None:
-        # Atemp to find the encoding from the html source
-        end_head_tag = source.find(b"</head>")
-        if end_head_tag:
-            # Search for the charset attribute within the meta tags
-            charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
-            charset = re.search(charset_refind, source[:end_head_tag], re.IGNORECASE)
-            if charset:
-                encoding = charset.group(1)
-            else:
-                warn_msg = "Unable to determine encoding, defaulting to {}".format(default_encoding)
-                warnings.warn(warn_msg, UnicodeWarning, stacklevel=1)
-        else:
-            warn_msg = "Unable to determine encoding, defaulting to {}".format(default_encoding)
-            warnings.warn(warn_msg, UnicodeWarning, stacklevel=1)
-
-    # Decode the string into unicode
-    return source.decode(encoding if encoding else default_encoding)
 
 
 # Required for raiseing HTMLParseError in python3, emulates python2
@@ -176,17 +135,24 @@ class HTMLement(object):
 
     .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
     __ XPath_
+
+    :param str encoding: (optional)
+    :param str tag: (optional)
+    :param dict attrs: (optional)
     """
-    def __init__(self, tag=None, attrs=None):
+    def __init__(self, tag=None, attrs=None, encoding=None):
         self._parser = _ParseHTML(tag, attrs)
+        self.encoding = encoding
         self.finished = False
 
     def feed(self, data):
         """
         Feeds data to the parser.
 
-        :param str data: HTML data
-        :raises ValueError: If *data* is not of type str.
+        :param data: HTML data
+        :type data: str, bytes
+
+        :raises UnicodeDecodeError: If decoding of *data* fails.
         """
         # Skip feeding data into parser if we already have what we want
         if self.finished is True:
@@ -194,7 +160,10 @@ class HTMLement(object):
 
         # Make sure that we have unicode before continuing
         if isinstance(data, bytes):
-            raise ValueError("HTML source must be str(unicode) not bytes. Please feed me unicode")
+            if self.encoding:
+                data = data.decode(self.encoding)
+            else:
+                data = self._make_unicode(data)
 
         # Parse the html document
         try:
@@ -211,6 +180,35 @@ class HTMLement(object):
         :rtype: xml.etree.ElementTree.Element
         """
         return self._parser.close()
+
+    def _make_unicode(self, data):
+        """
+        Convert *data* from type `bytes` to type `str`.
+
+        Encoding will be extracted from *data* using meta tags if available.
+        Will default to iso-8859-1 if unable to find encoding.
+
+        :param data: The html document.
+        :type data: bytes
+
+        :return: HTML data decoded into str(unicode).
+        :rtype: str
+        """
+        # Atemp to find the encoding from the html source
+        end_head_tag = data.find(b"</head>")
+        if end_head_tag:
+            # Search for the charset attribute within the meta tags
+            charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
+            charset = re.search(charset_refind, data[:end_head_tag], re.IGNORECASE)
+            if charset:
+                self.encoding = encoding = str(charset.group(1))
+                return data.decode(encoding)
+
+        # Decode the string into unicode using default encoding
+        warn_msg = "Unable to determine encoding, defaulting to iso-8859-1"
+        warnings.warn(warn_msg, UnicodeWarning, stacklevel=2)
+        self.encoding = "iso-8859-1"
+        return data.decode("iso-8859-1")
 
 
 class _ParseHTML(HTMLParser):
