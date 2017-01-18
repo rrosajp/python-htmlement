@@ -1,27 +1,5 @@
 #!/usr/bin/env python
-"""
-The MIT License (MIT)
-
-Copyright (c) 2013 Rafael Marmelo
-Copyright (c) 2016 William Forde
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
+# -*- coding: utf-8 -*-
 
 # Python 2 compatibility
 from __future__ import unicode_literals
@@ -41,20 +19,27 @@ except ImportError:
 if sys.version_info >= (3, 0):
     # noinspection PyCompatibility
     from html.parser import HTMLParser
+    basestring = (bytes, str)
 else:
     # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
 
-# When using 'from htmlement import *'
-__all__ = ["HTMLement", "HTMLParseError", "fromstring", "fromstringlist", "make_unicode"]
+__all__ = ["HTMLement", "fromstring", "fromstringlist", "parse", "make_unicode", "HTMLParseError"]
+__version__ = "0.1"
 
 
 def fromstring(text, tag=None, attrs=None):
     """
-    Parses an HTML Source into an element tree from a string.
+    Parses an HTML document from a string into an element tree.
 
-    *text* is a string containing html data,
-    Refer to :class:'HTMLement' for all other arguments
+    :param str text: The HTML document to parse.
+    :param str tag: @see :class:`HTMLement`.
+    :param dict attrs: @see :class:`HTMLement`.
+
+    :return: The root element of the element tree.
+    :rtype: xml.etree.ElementTree.Element
+
+    :raises HTMLParseError: If parsing of HTML document fails.
     """
     parser = HTMLement(tag, attrs)
     parser.feed(text)
@@ -63,10 +48,16 @@ def fromstring(text, tag=None, attrs=None):
 
 def fromstringlist(sequence, tag=None, attrs=None):
     """
-    Parses an HTML Source into an element tree from a sequence of strings.
+    Parses an HTML document from a sequence of html segments into an element tree.
 
-    *sequence* is a sequence of strings containing html data,
-    Refer to :class:'HTMLement' for all other arguments
+    :param list sequence: A sequence of HTML segments to parse.
+    :param str tag: @see :class:`HTMLement`.
+    :param dict attrs: @see :class:`HTMLement`.
+
+    :return: The root element of the element tree.
+    :rtype: xml.etree.ElementTree.Element
+
+    :raises HTMLParseError: If parsing of HTML document fails.
     """
     parser = HTMLement(tag, attrs)
     for text in sequence:
@@ -76,9 +67,16 @@ def fromstringlist(sequence, tag=None, attrs=None):
 
 def parse(source, tag=None, attrs=None):
     """
-    Load external HTML document into element tree.
+    Load an external HTML document into element tree.
 
-    *source* is a file name or file object
+    :param source: A filename or file object containing HTML data.
+    :param str tag: @see :class:`HTMLement`.
+    :param dict attrs: @see :class:`HTMLement`.
+
+    :return: The root element of the element tree.
+    :rtype: xml.etree.ElementTree.Element
+
+    :raises HTMLParseError: If parsing of HTML document fails.
     """
     # Assume that source is a file pointer if no read methods is found
     if hasattr(source, "read"):
@@ -108,28 +106,30 @@ def parse(source, tag=None, attrs=None):
 
 def make_unicode(source, encoding=None, default_encoding="iso-8859-1"):
     """
-    Turn's html source into unicode if not already unicode.
+    Convert *source* from type bytes to type str, if not already str.
 
-    If source is not unicode and no encoding is specified then the encoding
-    will be extracted from the html source meta tag if available.
-    Will default to iso-8859-1 if unable to find encoding.
+    If *source* is not of type *str* and *encoding* was not specified then the encoding
+    will be extracted from *source* using meta tags if available.
+    Will default to *default_encoding* if unable to find *encoding*.
 
-    Parameters
-    ----------
-    source : basestring
-        The html source data
+    :param bytes source: The html document.
+    :param str encoding: (optional) The encoding used to convert *source* to *str*.
+    :param str default_encoding: (optional) Default encoding to use when unable to extract the encoding from *source*.
 
-    encoding : str, optional
-        The encoding used to convert html source to unicode
+    :return: HTML data decoded into str(unicode).
+    :rtype: str
 
-    default_encoding : str, optional(default="iso-8859-1")
-        The default encoding to use if no encoding was specified and
-        was unable to extract the encoding from the html source.
+    :raises UnicodeDecodeError: If decoding of *source* fails.
+    :raises ValueError: If *source* is not of type *bytes* or *str*.
     """
-    if not isinstance(source, bytes):
-        return source
+    if isinstance(source, basestring):
+        if not isinstance(source, bytes):
+            # Already str(unicode)
+            return source
+    else:
+        raise ValueError("Source is not of valid type bytes or str")
 
-    elif encoding is None:
+    if encoding is None:
         # Atemp to find the encoding from the html source
         end_head_tag = source.find(b"</head>")
         if end_head_tag:
@@ -168,43 +168,52 @@ class HTMLParseError(Exception):
 
 class HTMLement(object):
     """
-    Python HTMLParser extension with ElementTree support.
-    @see https://github.com/willforde/python-htmlement
+    Python HTMLParser extension with ElementTree Parser support.
 
-    This HTML Parser extends html.parser.HTMLParser returning an xml.etree.ElementTree.Element instance.
-    The returned root element natively supports the ElementTree API.
-    (e.g. you may use its limited support for XPath expressions)
+    This HTML Parser extends :class:`html.parser.HTMLParser` returning an :class:`xml.etree.ElementTree.Element`
+    instance. The returned root element natively supports the ElementTree API.
+    (e.g. you may use its limited support for `XPath expressions`__)
 
-    @see https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
-    @see https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
+    .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
+    __ XPath_
     """
     def __init__(self, tag=None, attrs=None):
-        self._parser = ParseHTML(tag, attrs)
+        self._parser = _ParseHTML(tag, attrs)
         self.finished = False
 
-    def feed(self, source):
-        """Feeds data to the parser. data is unicode data."""
+    def feed(self, data):
+        """
+        Feeds data to the parser.
+
+        :param str data: HTML data
+        :raises ValueError: If *data* is not of type str.
+        """
         # Skip feeding data into parser if we already have what we want
         if self.finished is True:
             return None
 
         # Make sure that we have unicode before continuing
-        if isinstance(source, bytes):
-            raise ValueError("HTML source must be unicode not string. Please feed me unicode")
+        if isinstance(data, bytes):
+            raise ValueError("HTML source must be str(unicode) not bytes. Please feed me unicode")
 
         # Parse the html document
         try:
-            self._parser.feed(source)
+            self._parser.feed(data)
         except EOFError:
             self.finished = True
             self._parser.reset()
 
     def close(self):
-        # Close the tree builder and return the root element that is returned by the treebuilder
+        """
+        Close the tree builder and return the root element of the element tree.
+
+        :return: The root element of the element tree.
+        :rtype: xml.etree.ElementTree.Element
+        """
         return self._parser.close()
 
 
-class ParseHTML(HTMLParser):
+class _ParseHTML(HTMLParser):
     def __init__(self, tag, attrs):
         # Initiate HTMLParser
         HTMLParser.__init__(self)

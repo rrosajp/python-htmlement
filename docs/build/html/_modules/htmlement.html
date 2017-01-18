@@ -1,0 +1,465 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>htmlement &#8212; HTMLement 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">HTMLement 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for htmlement</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Python 2 compatibility</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+
+<span class="c1"># Standard library imports</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c1"># Import the faster C implementation of ElementTree whenever available</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">xml.etree</span> <span class="k">import</span> <span class="n">cElementTree</span> <span class="k">as</span> <span class="n">Etree</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">xml.etree</span> <span class="k">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">Etree</span>
+
+<span class="c1"># Check python version to set the object that can detect non unicode strings</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="c1"># noinspection PyCompatibility</span>
+    <span class="kn">from</span> <span class="nn">html.parser</span> <span class="k">import</span> <span class="n">HTMLParser</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility</span>
+    <span class="kn">from</span> <span class="nn">HTMLParser</span> <span class="k">import</span> <span class="n">HTMLParser</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HTMLement&quot;</span><span class="p">,</span> <span class="s2">&quot;fromstring&quot;</span><span class="p">,</span> <span class="s2">&quot;fromstringlist&quot;</span><span class="p">,</span> <span class="s2">&quot;parse&quot;</span><span class="p">,</span> <span class="s2">&quot;make_unicode&quot;</span><span class="p">,</span> <span class="s2">&quot;HTMLParseError&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1&quot;</span>
+
+
+<div class="viewcode-block" id="fromstring"><a class="viewcode-back" href="../index.html#htmlement.fromstring">[docs]</a><span class="k">def</span> <span class="nf">fromstring</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses an HTML document from a string into an element tree.</span>
+
+<span class="sd">    :param str text: The HTML document to parse.</span>
+<span class="sd">    :param str tag: @see :class:`HTMLement`.</span>
+<span class="sd">    :param dict attrs: @see :class:`HTMLement`.</span>
+
+<span class="sd">    :return: The root element of the element tree.</span>
+<span class="sd">    :rtype: xml.etree.ElementTree.Element</span>
+
+<span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="fromstringlist"><a class="viewcode-back" href="../index.html#htmlement.fromstringlist">[docs]</a><span class="k">def</span> <span class="nf">fromstringlist</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses an HTML document from a sequence of html segments into an element tree.</span>
+
+<span class="sd">    :param list sequence: A sequence of HTML segments to parse.</span>
+<span class="sd">    :param str tag: @see :class:`HTMLement`.</span>
+<span class="sd">    :param dict attrs: @see :class:`HTMLement`.</span>
+
+<span class="sd">    :return: The root element of the element tree.</span>
+<span class="sd">    :rtype: xml.etree.ElementTree.Element</span>
+
+<span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../index.html#htmlement.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load an external HTML document into element tree.</span>
+
+<span class="sd">    :param source: A filename or file object containing HTML data.</span>
+<span class="sd">    :param str tag: @see :class:`HTMLement`.</span>
+<span class="sd">    :param dict attrs: @see :class:`HTMLement`.</span>
+
+<span class="sd">    :return: The root element of the element tree.</span>
+<span class="sd">    :rtype: xml.etree.ElementTree.Element</span>
+
+<span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Assume that source is a file pointer if no read methods is found</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+        <span class="n">close_source</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">close_source</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Read in 64k at a time</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">65536</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Feed the parser</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Return the root element</span>
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">close_source</span><span class="p">:</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="make_unicode"><a class="viewcode-back" href="../index.html#htmlement.make_unicode">[docs]</a><span class="k">def</span> <span class="nf">make_unicode</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_encoding</span><span class="o">=</span><span class="s2">&quot;iso-8859-1&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert *source* from type bytes to type str, if not already str.</span>
+
+<span class="sd">    If *source* is not of type *str* and *encoding* was not specified then the encoding</span>
+<span class="sd">    will be extracted from *source* using meta tags if available.</span>
+<span class="sd">    Will default to *default_encoding* if unable to find *encoding*.</span>
+
+<span class="sd">    :param bytes source: The html document.</span>
+<span class="sd">    :param str encoding: (optional) The encoding used to convert *source* to *str*.</span>
+<span class="sd">    :param str default_encoding: (optional) Default encoding to use when unable to extract the encoding from *source*.</span>
+
+<span class="sd">    :return: HTML data decoded into str(unicode).</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    :raises UnicodeDecodeError: If decoding of *source* fails.</span>
+<span class="sd">    :raises ValueError: If *source* is not of type *bytes* or *str*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="c1"># Already str(unicode)</span>
+            <span class="k">return</span> <span class="n">source</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source is not of valid type bytes or str&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Atemp to find the encoding from the html source</span>
+        <span class="n">end_head_tag</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="s2">&quot;&lt;/head&gt;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end_head_tag</span><span class="p">:</span>
+            <span class="c1"># Search for the charset attribute within the meta tags</span>
+            <span class="n">charset_refind</span> <span class="o">=</span> <span class="n">b</span><span class="s1">&#39;&lt;meta.+?charset=[</span><span class="se">\&#39;</span><span class="s1">&quot;]*(.+?)[&quot;</span><span class="se">\&#39;</span><span class="s1">].*?&gt;&#39;</span>
+            <span class="n">charset</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">charset_refind</span><span class="p">,</span> <span class="n">source</span><span class="p">[:</span><span class="n">end_head_tag</span><span class="p">],</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">charset</span><span class="p">:</span>
+                <span class="n">encoding</span> <span class="o">=</span> <span class="n">charset</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to determine encoding, defaulting to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">default_encoding</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">,</span> <span class="ne">UnicodeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to determine encoding, defaulting to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">default_encoding</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">,</span> <span class="ne">UnicodeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Decode the string into unicode</span>
+    <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span> <span class="k">if</span> <span class="n">encoding</span> <span class="k">else</span> <span class="n">default_encoding</span><span class="p">)</span></div>
+
+
+<span class="c1"># Required for raiseing HTMLParseError in python3, emulates python2</span>
+<div class="viewcode-block" id="HTMLParseError"><a class="viewcode-back" href="../index.html#htmlement.HTMLParseError">[docs]</a><span class="k">class</span> <span class="nc">HTMLParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception raised for all parse errors.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lineno</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lineno</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;, at line </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">lineno</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;, column </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="HTMLement"><a class="viewcode-back" href="../index.html#htmlement.HTMLement">[docs]</a><span class="k">class</span> <span class="nc">HTMLement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Python HTMLParser extension with ElementTree Parser support.</span>
+
+<span class="sd">    This HTML Parser extends :class:`html.parser.HTMLParser` returning an :class:`xml.etree.ElementTree.Element`</span>
+<span class="sd">    instance. The returned root element natively supports the ElementTree API.</span>
+<span class="sd">    (e.g. you may use its limited support for `XPath expressions`__)</span>
+
+<span class="sd">    .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support</span>
+<span class="sd">    __ XPath_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">_ParseHTML</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="HTMLement.feed"><a class="viewcode-back" href="../index.html#htmlement.HTMLement.feed">[docs]</a>    <span class="k">def</span> <span class="nf">feed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Feeds data to the parser.</span>
+
+<span class="sd">        :param str data: HTML data</span>
+<span class="sd">        :raises ValueError: If *data* is not of type str.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Skip feeding data into parser if we already have what we want</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Make sure that we have unicode before continuing</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;HTML source must be str(unicode) not bytes. Please feed me unicode&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Parse the html document</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="HTMLement.close"><a class="viewcode-back" href="../index.html#htmlement.HTMLement.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the tree builder and return the root element of the element tree.</span>
+
+<span class="sd">        :return: The root element of the element tree.</span>
+<span class="sd">        :rtype: xml.etree.ElementTree.Element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">_ParseHTML</span><span class="p">(</span><span class="n">HTMLParser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="c1"># Initiate HTMLParser</span>
+        <span class="n">HTMLParser</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_charrefs</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># root element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># data collector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">Etree</span><span class="o">.</span><span class="n">Element</span>
+
+        <span class="c1"># Split attributes into wanted and unwanted attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unw_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">]</span> <span class="k">if</span> <span class="n">attrs</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span> <span class="k">if</span> <span class="n">attrs</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+
+        <span class="c1"># Some tags in html do not require closing tags so thoes tags will need to be auto closed (Void elements)</span>
+        <span class="c1"># Refer to: https://www.w3.org/TR/html/syntax.html#void-elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_voids</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s2">&quot;area&quot;</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;br&quot;</span><span class="p">,</span> <span class="s2">&quot;col&quot;</span><span class="p">,</span> <span class="s2">&quot;hr&quot;</span><span class="p">,</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;param&quot;</span><span class="p">,</span>
+                                 <span class="c1"># Only in HTML5</span>
+                                 <span class="s2">&quot;embed&quot;</span><span class="p">,</span> <span class="s2">&quot;keygen&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;track&quot;</span><span class="p">,</span>
+                                 <span class="c1"># Not supported in HTML5</span>
+                                 <span class="s2">&quot;basefont&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;isindex&quot;</span><span class="p">,</span>
+                                 <span class="c1"># SVG self closing tags</span>
+                                 <span class="s2">&quot;rect&quot;</span><span class="p">,</span> <span class="s2">&quot;circle&quot;</span><span class="p">,</span> <span class="s2">&quot;ellipse&quot;</span><span class="p">,</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="s2">&quot;polyline&quot;</span><span class="p">,</span> <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
+                                 <span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;use&quot;</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;animatetransform&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Create temporary root element to protect from badly written sites that either</span>
+        <span class="c1"># have no html starting tag or multiple top level elements</span>
+        <span class="n">elem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span><span class="p">(</span><span class="s2">&quot;html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">elem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">handle_starttag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_starttag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">self_closing</span><span class="o">=</span><span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_startendtag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_starttag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">self_closing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_starttag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">self_closing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span>
+        <span class="c1"># Add tag element to tree if we have no filter or that the filter matches</span>
+        <span class="k">if</span> <span class="n">enabled</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+            <span class="c1"># Convert attrs to dictionary</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="k">if</span> <span class="n">attrs</span> <span class="k">else</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flush</span><span class="p">()</span>
+
+            <span class="c1"># Create the new element</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">elem</span>
+
+            <span class="c1"># Only append the element to the list of elements if it&#39;s not a self closing element</span>
+            <span class="k">if</span> <span class="n">self_closing</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Set this element as the root element when the filter search matches</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">enabled</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">elem</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">handle_endtag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="c1"># Only process end tags when we have no filter or that the filter has been matched</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="ow">and</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voids</span><span class="p">:</span>
+            <span class="n">_elem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span>
+            <span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+            <span class="c1"># Check that the closing tag is what&#39;s actualy expected</span>
+            <span class="k">if</span> <span class="n">_elem</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">tag</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flush</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">_elem</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="n">_root</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">EOFError</span>
+
+            <span class="c1"># If the previous element is what we actually have then the expected element was not</span>
+            <span class="c1"># properly closed so we must close that before closing what we have now</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">_elem</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">_elem</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">tag</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flush</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">_elem</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="n">_root</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">EOFError</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Unable to match the tag to an element, ignoring it</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">handle_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">Etree</span><span class="o">.</span><span class="n">Comment</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flush</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Search the root element to find a proper html root element if one exists</span>
+            <span class="n">tmp_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">proper_root</span> <span class="o">=</span> <span class="n">tmp_root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;html&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">proper_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Not proper root was found</span>
+                <span class="k">return</span> <span class="n">tmp_root</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Proper root found</span>
+                <span class="k">return</span> <span class="n">proper_root</span>
+
+    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTMLParseError</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getpos</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_last</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">text</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_last</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="c1"># Only search when the tag matches</span>
+        <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+            <span class="c1"># If we have required attrs to match then search all attrs for wanted attrs</span>
+            <span class="c1"># And also check that we do not have any attrs that are unwanted</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unw_attrs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attrs</span><span class="p">:</span>
+                    <span class="n">wanted_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">unwanted_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unw_attrs</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                        <span class="c1"># Check for unwanted attrs</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">unwanted_attrs</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="kc">False</span>
+
+                        <span class="c1"># Check for wanted attrs</span>
+                        <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wanted_attrs</span><span class="p">:</span>
+                            <span class="n">c_value</span> <span class="o">=</span> <span class="n">wanted_attrs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">c_value</span> <span class="o">==</span> <span class="n">value</span> <span class="ow">or</span> <span class="n">c_value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                                <span class="c1"># Remove this attribute from the wanted dict of attributes</span>
+                                <span class="c1"># to indicate that this attribute has been found</span>
+                                <span class="k">del</span> <span class="n">wanted_attrs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                    <span class="c1"># If wanted_attrs is now empty then all attributes must have been found</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">wanted_attrs</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># We only need to match tag</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Unable to find required section</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">HTMLement 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, William Forde.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

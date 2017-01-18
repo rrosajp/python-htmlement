@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>htmlement Module &#8212; HTMLement 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="includeme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="includeme.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">HTMLement 0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="htmlement-module">
+<h1>htmlement Module<a class="headerlink" href="#htmlement-module" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="includeme.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="includeme.html#why-another-python-html-parser">Why another Python HTML Parser?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="includeme.html#example">Example</a></li>
+</ul>
+</div>
+<div class="section" id="module-htmlement">
+<span id="api"></span><h2>API<a class="headerlink" href="#module-htmlement" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="htmlement.HTMLement">
+<em class="property">class </em><code class="descclassname">htmlement.</code><code class="descname">HTMLement</code><span class="sig-paren">(</span><em>tag=None</em>, <em>attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#HTMLement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.HTMLement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python HTMLParser extension with ElementTree Parser support.</p>
+<p>This HTML Parser extends <a class="reference external" href="https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">html.parser.HTMLParser</span></code></a> returning an <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">xml.etree.ElementTree.Element</span></code></a>
+instance. The returned root element natively supports the ElementTree API.
+(e.g. you may use its limited support for <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support">XPath expressions</a>)</p>
+<dl class="method">
+<dt id="htmlement.HTMLement.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#HTMLement.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.HTMLement.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the tree builder and return the root element of the element tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The root element of the element tree.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)">xml.etree.ElementTree.Element</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="htmlement.HTMLement.feed">
+<code class="descname">feed</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#HTMLement.feed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.HTMLement.feed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feeds data to the parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; HTML data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/exceptions.html#ValueError" title="(in Python v3.6)"><strong>ValueError</strong></a> &#8211; If <em>data</em> is not of type str.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="htmlement.fromstring">
+<code class="descclassname">htmlement.</code><code class="descname">fromstring</code><span class="sig-paren">(</span><em>text</em>, <em>tag=None</em>, <em>attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#fromstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.fromstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an HTML document from a string into an element tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; The HTML document to parse.</li>
+<li><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; &#64;see <a class="reference internal" href="#htmlement.HTMLement" title="htmlement.HTMLement"><code class="xref py py-class docutils literal"><span class="pre">HTMLement</span></code></a>.</li>
+<li><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) &#8211; &#64;see <a class="reference internal" href="#htmlement.HTMLement" title="htmlement.HTMLement"><code class="xref py py-class docutils literal"><span class="pre">HTMLement</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The root element of the element tree.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)">xml.etree.ElementTree.Element</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#htmlement.HTMLParseError" title="htmlement.HTMLParseError"><strong>HTMLParseError</strong></a> &#8211; If parsing of HTML document fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="htmlement.fromstringlist">
+<code class="descclassname">htmlement.</code><code class="descname">fromstringlist</code><span class="sig-paren">(</span><em>sequence</em>, <em>tag=None</em>, <em>attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#fromstringlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.fromstringlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an HTML document from a sequence of html segments into an element tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sequence</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) &#8211; A sequence of HTML segments to parse.</li>
+<li><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; &#64;see <a class="reference internal" href="#htmlement.HTMLement" title="htmlement.HTMLement"><code class="xref py py-class docutils literal"><span class="pre">HTMLement</span></code></a>.</li>
+<li><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) &#8211; &#64;see <a class="reference internal" href="#htmlement.HTMLement" title="htmlement.HTMLement"><code class="xref py py-class docutils literal"><span class="pre">HTMLement</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The root element of the element tree.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)">xml.etree.ElementTree.Element</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#htmlement.HTMLParseError" title="htmlement.HTMLParseError"><strong>HTMLParseError</strong></a> &#8211; If parsing of HTML document fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="htmlement.parse">
+<code class="descclassname">htmlement.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>source</em>, <em>tag=None</em>, <em>attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an external HTML document into element tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>source</strong> &#8211; A filename or file object containing HTML data.</li>
+<li><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; &#64;see <a class="reference internal" href="#htmlement.HTMLement" title="htmlement.HTMLement"><code class="xref py py-class docutils literal"><span class="pre">HTMLement</span></code></a>.</li>
+<li><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) &#8211; &#64;see <a class="reference internal" href="#htmlement.HTMLement" title="htmlement.HTMLement"><code class="xref py py-class docutils literal"><span class="pre">HTMLement</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The root element of the element tree.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)">xml.etree.ElementTree.Element</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#htmlement.HTMLParseError" title="htmlement.HTMLParseError"><strong>HTMLParseError</strong></a> &#8211; If parsing of HTML document fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="htmlement.make_unicode">
+<code class="descclassname">htmlement.</code><code class="descname">make_unicode</code><span class="sig-paren">(</span><em>source</em>, <em>encoding=None</em>, <em>default_encoding='iso-8859-1'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#make_unicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.make_unicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <em>source</em> from type bytes to type str, if not already str.</p>
+<p>If <em>source</em> is not of type <em>str</em> and <em>encoding</em> was not specified then the encoding
+will be extracted from <em>source</em> using meta tags if available.
+Will default to <em>default_encoding</em> if unable to find <em>encoding</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bytes" title="(in Python v3.6)"><em>bytes</em></a>) &#8211; The html document.</li>
+<li><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; (optional) The encoding used to convert <em>source</em> to <em>str</em>.</li>
+<li><strong>default_encoding</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; (optional) Default encoding to use when unable to extract the encoding from <em>source</em>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTML data decoded into str(unicode).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3.6/library/exceptions.html#UnicodeDecodeError" title="(in Python v3.6)"><strong>UnicodeDecodeError</strong></a> &#8211; If decoding of <em>source</em> fails.</li>
+<li><a class="reference external" href="https://docs.python.org/3.6/library/exceptions.html#ValueError" title="(in Python v3.6)"><strong>ValueError</strong></a> &#8211; If <em>source</em> is not of type <em>bytes</em> or <em>str</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="exception">
+<dt id="htmlement.HTMLParseError">
+<em class="property">exception </em><code class="descclassname">htmlement.</code><code class="descname">HTMLParseError</code><span class="sig-paren">(</span><em>msg</em>, <em>position=(None</em>, <em>None)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htmlement.html#HTMLParseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#htmlement.HTMLParseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception raised for all parse errors.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">htmlement Module</a><ul>
+<li><a class="reference internal" href="#module-htmlement">API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="includeme.html"
+                        title="next chapter">Installation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="includeme.html" title="Installation"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">HTMLement 0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, William Forde.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
