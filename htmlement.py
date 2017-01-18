@@ -33,15 +33,18 @@ def fromstring(text, tag=None, attrs=None, encoding=None):
     """
     Parses an HTML document from a string into an element tree.
 
-    :param str, bytes text: The HTML document to parse.
-    :param str tag: (optional) see :class:`HTMLement`.
-    :param dict attrs: (optional) see :class:`HTMLement`.
+    :param text: The HTML document to parse.
+    :type text: str, bytes
+
+    :param str tag: (optional) see :class:`HTMLement` for details.
+    :param dict attrs: (optional) see :class:`HTMLement` for details.
     :param str encoding: (optional) The encoding used for *text*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises HTMLParseError: If parsing of HTML document fails.
+    :raises UnicodeDecodeError: If decoding of *data* fails.
     """
     parser = HTMLement(tag, attrs, encoding)
     parser.feed(text)
@@ -52,15 +55,18 @@ def fromstringlist(sequence, tag=None, attrs=None, encoding=None):
     """
     Parses an HTML document from a sequence of html segments into an element tree.
 
-    :param list sequence: A sequence of HTML segments to parse.
-    :param str tag: (optional) see :class:`HTMLement`.
-    :param dict attrs: (optional) see :class:`HTMLement`.
+    :param sequence: A sequence of HTML segments to parse.
+    :type sequence: list[str,bytes]
+
+    :param str tag: (optional) see :class:`HTMLement` for details.
+    :param dict attrs: (optional) see :class:`HTMLement` for details.
     :param str encoding: (optional) The encoding used for each segment within *sequence*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises HTMLParseError: If parsing of HTML document fails.
+    :raises UnicodeDecodeError: If decoding of *data* fails.
     """
     parser = HTMLement(tag, attrs, encoding)
     for text in sequence:
@@ -73,14 +79,17 @@ def parse(source, tag=None, attrs=None, encoding=None):
     Load an external HTML document into element tree.
 
     :param source: A filename or file object containing HTML data.
-    :param str tag: (optional) see :class:`HTMLement`.
-    :param dict attrs: (optional) see :class:`HTMLement`.
+    :type source: str, io.TextIOBase
+
+    :param str tag: (optional) see :class:`HTMLement` for details.
+    :param dict attrs: (optional) see :class:`HTMLement` for details.
     :param str encoding: (optional) The encoding used for *sequence*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises HTMLParseError: If parsing of HTML document fails.
+    :raises UnicodeDecodeError: If decoding of *data* fails.
     """
     # Assume that source is a file pointer if no read methods is found
     if hasattr(source, "read"):
@@ -133,12 +142,23 @@ class HTMLement(object):
     instance. The returned root element natively supports the ElementTree API.
     (e.g. you may use its limited support for `XPath expressions`__)
 
+    When a tag and tag attributes are given the parser will search for a required section. Only when the required
+    section is found does the parser start parsing the HTML document. The element that matches the search criteria
+    will then become the new root element.
+
+    :param tag: (optional) Tag name of an element that is used to filter down the tree to a required section.
+    :type tag: str
+
+    :param attrs: (optional) The attributes of said element that is used when searching for required section.
+    :type attrs: dict
+
+    :param encoding: (optional) The encoding used when decoding the source data before feeding it to the parser.
+    :type encoding: str
+
+    :raises HTMLParseError: If parsing of HTML document fails.
+
     .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
     __ XPath_
-
-    :param str encoding: (optional)
-    :param str tag: (optional)
-    :param dict attrs: (optional)
     """
     def __init__(self, tag=None, attrs=None, encoding=None):
         self._parser = _ParseHTML(tag, attrs)

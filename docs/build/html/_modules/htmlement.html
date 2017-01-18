@@ -73,70 +73,83 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility</span>
     <span class="kn">from</span> <span class="nn">HTMLParser</span> <span class="k">import</span> <span class="n">HTMLParser</span>
+    <span class="kn">from</span> <span class="nn">codecs</span> <span class="k">import</span> <span class="nb">open</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HTMLement&quot;</span><span class="p">,</span> <span class="s2">&quot;fromstring&quot;</span><span class="p">,</span> <span class="s2">&quot;fromstringlist&quot;</span><span class="p">,</span> <span class="s2">&quot;parse&quot;</span><span class="p">,</span> <span class="s2">&quot;make_unicode&quot;</span><span class="p">,</span> <span class="s2">&quot;HTMLParseError&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HTMLement&quot;</span><span class="p">,</span> <span class="s2">&quot;fromstring&quot;</span><span class="p">,</span> <span class="s2">&quot;fromstringlist&quot;</span><span class="p">,</span> <span class="s2">&quot;parse&quot;</span><span class="p">,</span> <span class="s2">&quot;HTMLParseError&quot;</span><span class="p">]</span>
 <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1&quot;</span>
 
 
-<div class="viewcode-block" id="fromstring"><a class="viewcode-back" href="../index.html#htmlement.fromstring">[docs]</a><span class="k">def</span> <span class="nf">fromstring</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fromstring"><a class="viewcode-back" href="../index.html#htmlement.fromstring">[docs]</a><span class="k">def</span> <span class="nf">fromstring</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parses an HTML document from a string into an element tree.</span>
 
-<span class="sd">    :param str text: The HTML document to parse.</span>
-<span class="sd">    :param str tag: see :class:`HTMLement`.</span>
-<span class="sd">    :param dict attrs: see :class:`HTMLement`.</span>
+<span class="sd">    :param text: The HTML document to parse.</span>
+<span class="sd">    :type text: str, bytes</span>
+
+<span class="sd">    :param str tag: (optional) see :class:`HTMLement` for details.</span>
+<span class="sd">    :param dict attrs: (optional) see :class:`HTMLement` for details.</span>
+<span class="sd">    :param str encoding: (optional) The encoding used for *text*</span>
 
 <span class="sd">    :return: The root element of the element tree.</span>
 <span class="sd">    :rtype: xml.etree.ElementTree.Element</span>
 
 <span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+<span class="sd">    :raises UnicodeDecodeError: If decoding of *data* fails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">encoding</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="fromstringlist"><a class="viewcode-back" href="../index.html#htmlement.fromstringlist">[docs]</a><span class="k">def</span> <span class="nf">fromstringlist</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fromstringlist"><a class="viewcode-back" href="../index.html#htmlement.fromstringlist">[docs]</a><span class="k">def</span> <span class="nf">fromstringlist</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parses an HTML document from a sequence of html segments into an element tree.</span>
 
-<span class="sd">    :param list sequence: A sequence of HTML segments to parse.</span>
-<span class="sd">    :param str tag: see :class:`HTMLement`.</span>
-<span class="sd">    :param dict attrs: see :class:`HTMLement`.</span>
+<span class="sd">    :param sequence: A sequence of HTML segments to parse.</span>
+<span class="sd">    :type sequence: list[str,bytes]</span>
+
+<span class="sd">    :param str tag: (optional) see :class:`HTMLement` for details.</span>
+<span class="sd">    :param dict attrs: (optional) see :class:`HTMLement` for details.</span>
+<span class="sd">    :param str encoding: (optional) The encoding used for each segment within *sequence*</span>
 
 <span class="sd">    :return: The root element of the element tree.</span>
 <span class="sd">    :rtype: xml.etree.ElementTree.Element</span>
 
 <span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+<span class="sd">    :raises UnicodeDecodeError: If decoding of *data* fails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">encoding</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../index.html#htmlement.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../index.html#htmlement.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load an external HTML document into element tree.</span>
 
 <span class="sd">    :param source: A filename or file object containing HTML data.</span>
-<span class="sd">    :param str tag: see :class:`HTMLement`.</span>
-<span class="sd">    :param dict attrs: see :class:`HTMLement`.</span>
+<span class="sd">    :type source: str, io.TextIOBase</span>
+
+<span class="sd">    :param str tag: (optional) see :class:`HTMLement` for details.</span>
+<span class="sd">    :param dict attrs: (optional) see :class:`HTMLement` for details.</span>
+<span class="sd">    :param str encoding: (optional) The encoding used for *sequence*</span>
 
 <span class="sd">    :return: The root element of the element tree.</span>
 <span class="sd">    :rtype: xml.etree.ElementTree.Element</span>
 
 <span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+<span class="sd">    :raises UnicodeDecodeError: If decoding of *data* fails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Assume that source is a file pointer if no read methods is found</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
-        <span class="n">source</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
         <span class="n">close_source</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">close_source</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">HTMLement</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">encoding</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Read in 64k at a time</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">65536</span><span class="p">)</span>
@@ -152,51 +165,6 @@
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">close_source</span><span class="p">:</span>
             <span class="n">source</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="make_unicode"><a class="viewcode-back" href="../index.html#htmlement.make_unicode">[docs]</a><span class="k">def</span> <span class="nf">make_unicode</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_encoding</span><span class="o">=</span><span class="s2">&quot;iso-8859-1&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert *source* from type bytes to type str, if not already str.</span>
-
-<span class="sd">    If *source* is not of type *str* and *encoding* was not specified then the encoding</span>
-<span class="sd">    will be extracted from *source* using meta tags if available.</span>
-<span class="sd">    Will default to *default_encoding* if unable to find *encoding*.</span>
-
-<span class="sd">    :param bytes source: The html document.</span>
-<span class="sd">    :param str encoding: (optional) The encoding used to convert *source* to *str*.</span>
-<span class="sd">    :param str default_encoding: (optional) Default encoding to use when unable to extract the encoding from *source*.</span>
-
-<span class="sd">    :return: HTML data decoded into str(unicode).</span>
-<span class="sd">    :rtype: str</span>
-
-<span class="sd">    :raises UnicodeDecodeError: If decoding of *source* fails.</span>
-<span class="sd">    :raises ValueError: If *source* is not of type *bytes* or *str*.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="c1"># Already str(unicode)</span>
-            <span class="k">return</span> <span class="n">source</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source is not of valid type bytes or str&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Atemp to find the encoding from the html source</span>
-        <span class="n">end_head_tag</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="s2">&quot;&lt;/head&gt;&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">end_head_tag</span><span class="p">:</span>
-            <span class="c1"># Search for the charset attribute within the meta tags</span>
-            <span class="n">charset_refind</span> <span class="o">=</span> <span class="n">b</span><span class="s1">&#39;&lt;meta.+?charset=[</span><span class="se">\&#39;</span><span class="s1">&quot;]*(.+?)[&quot;</span><span class="se">\&#39;</span><span class="s1">].*?&gt;&#39;</span>
-            <span class="n">charset</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">charset_refind</span><span class="p">,</span> <span class="n">source</span><span class="p">[:</span><span class="n">end_head_tag</span><span class="p">],</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">charset</span><span class="p">:</span>
-                <span class="n">encoding</span> <span class="o">=</span> <span class="n">charset</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to determine encoding, defaulting to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">default_encoding</span><span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">,</span> <span class="ne">UnicodeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to determine encoding, defaulting to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">default_encoding</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">,</span> <span class="ne">UnicodeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="c1"># Decode the string into unicode</span>
-    <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span> <span class="k">if</span> <span class="n">encoding</span> <span class="k">else</span> <span class="n">default_encoding</span><span class="p">)</span></div>
 
 
 <span class="c1"># Required for raiseing HTMLParseError in python3, emulates python2</span>
@@ -224,19 +192,37 @@
 <span class="sd">    instance. The returned root element natively supports the ElementTree API.</span>
 <span class="sd">    (e.g. you may use its limited support for `XPath expressions`__)</span>
 
+<span class="sd">    When a tag and tag attributes are given the parser will search for a required section. Only when the required</span>
+<span class="sd">    section is found does the parser start parsing the HTML document. The element that matches the search criteria</span>
+<span class="sd">    will then become the new root element.</span>
+
+<span class="sd">    :param tag: (optional) Tag name of an element that is used to filter down the tree to a required section.</span>
+<span class="sd">    :type tag: str</span>
+
+<span class="sd">    :param attrs: (optional) The attributes of said element that is used when searching for required section.</span>
+<span class="sd">    :type attrs: dict</span>
+
+<span class="sd">    :param encoding: (optional) The encoding used when decoding the source data before feeding it to the parser.</span>
+<span class="sd">    :type encoding: str</span>
+
+<span class="sd">    :raises HTMLParseError: If parsing of HTML document fails.</span>
+
 <span class="sd">    .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support</span>
 <span class="sd">    __ XPath_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">_ParseHTML</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="HTMLement.feed"><a class="viewcode-back" href="../index.html#htmlement.HTMLement.feed">[docs]</a>    <span class="k">def</span> <span class="nf">feed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Feeds data to the parser.</span>
 
-<span class="sd">        :param str data: HTML data</span>
-<span class="sd">        :raises ValueError: If *data* is not of type str.</span>
+<span class="sd">        :param data: HTML data</span>
+<span class="sd">        :type data: str, bytes</span>
+
+<span class="sd">        :raises UnicodeDecodeError: If decoding of *data* fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Skip feeding data into parser if we already have what we want</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -244,7 +230,10 @@
 
         <span class="c1"># Make sure that we have unicode before continuing</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;HTML source must be str(unicode) not bytes. Please feed me unicode&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_unicode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="c1"># Parse the html document</span>
         <span class="k">try</span><span class="p">:</span>
@@ -260,7 +249,36 @@
 <span class="sd">        :return: The root element of the element tree.</span>
 <span class="sd">        :rtype: xml.etree.ElementTree.Element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_make_unicode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert *data* from type `bytes` to type `str`.</span>
+
+<span class="sd">        Encoding will be extracted from *data* using meta tags if available.</span>
+<span class="sd">        Will default to iso-8859-1 if unable to find encoding.</span>
+
+<span class="sd">        :param data: The html document.</span>
+<span class="sd">        :type data: bytes</span>
+
+<span class="sd">        :return: HTML data decoded into str(unicode).</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Atemp to find the encoding from the html source</span>
+        <span class="n">end_head_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="s2">&quot;&lt;/head&gt;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end_head_tag</span><span class="p">:</span>
+            <span class="c1"># Search for the charset attribute within the meta tags</span>
+            <span class="n">charset_refind</span> <span class="o">=</span> <span class="n">b</span><span class="s1">&#39;&lt;meta.+?charset=[</span><span class="se">\&#39;</span><span class="s1">&quot;]*(.+?)[&quot;</span><span class="se">\&#39;</span><span class="s1">].*?&gt;&#39;</span>
+            <span class="n">charset</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">charset_refind</span><span class="p">,</span> <span class="n">data</span><span class="p">[:</span><span class="n">end_head_tag</span><span class="p">],</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">charset</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">charset</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+
+        <span class="c1"># Decode the string into unicode using default encoding</span>
+        <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to determine encoding, defaulting to iso-8859-1&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">,</span> <span class="ne">UnicodeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;iso-8859-1&quot;</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;iso-8859-1&quot;</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">_ParseHTML</span><span class="p">(</span><span class="n">HTMLParser</span><span class="p">):</span>
