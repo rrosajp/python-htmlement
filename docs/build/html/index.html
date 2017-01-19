@@ -62,7 +62,7 @@
 <div class="section" id="why-another-python-html-parser">
 <h2>Why another Python HTML Parser?<a class="headerlink" href="#why-another-python-html-parser" title="Permalink to this headline">¶</a></h2>
 <p>There is no HTML Parser in the Python Standard Library.
-Actually, there is the <a class="reference external" href="https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">html.parser.HTMLParser</span></code></a> that simply traverses the DOM tree and allows us to be notified as
+Actually, there is the <a class="reference external" href="https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser">html.parser.HTMLParser</a> that simply traverses the DOM tree and allows us to be notified as
 each tag is being parsed. Usually, when we parse HTML we want to query its elements and extract data from it.</p>
 <dl class="docutils">
 <dt>There are a few third party HTML parsers available like &#8220;lxml&#8221;, &#8220;html5lib&#8221; and &#8220;beautifulsoup&#8221;.</dt>
@@ -77,7 +77,7 @@ each tag is being parsed. Usually, when we parse HTML we want to query its eleme
 The most simple way to do this is to use <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support">XPath expressions</a>.
 Python does support a simple (read limited) XPath engine inside its ElementTree module.
 Also a nice benefit of using ElementTree is that it can use a C implementation whenever available.</p>
-<p>This HTML Parser extends <a class="reference external" href="https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">html.parser.HTMLParser</span></code></a> to build a tree of <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">ElementTree.Element</span></code></a> instances.
+<p>This HTML Parser extends <a class="reference external" href="https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser">html.parser.HTMLParser</a> to build a tree of <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element">ElementTree.Element</a> instances.
 The returned root element natively supports the ElementTree API.</p>
 </div>
 <div class="section" id="parsing-html">
@@ -100,7 +100,7 @@ The returned root element natively supports the ElementTree API.</p>
 <span class="n">root</span> <span class="o">=</span> <span class="n">htmlement</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Root is an <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">ElementTree.Element</span></code></a> and supports the ElementTree API
+<p>Root is an <a class="reference external" href="https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element">ElementTree.Element</a> and supports the ElementTree API
 with XPath expressions. With this we are easily able to get both the title and all anchors in the document.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Get title</span>
 <span class="n">title</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;head/title&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
@@ -121,8 +121,8 @@ with XPath expressions. With this we are easily able to get both the title and a
 <div class="section" id="parsing-html-with-a-filter">
 <h2>Parsing HTML with a filter<a class="headerlink" href="#parsing-html-with-a-filter" title="Permalink to this headline">¶</a></h2>
 <p>Here we’ll be using a slightly more complex HTML document that we will parse using htmlement with a filter to fetch
-only the menu items. This can be very useful when dealing with large HTML documents sense it can be quite slow to parse
-a whole document when we only need to parse a small part of it.</p>
+only the menu items. This can be very useful when dealing with large HTML documents sense it can be a lot faster to
+only parse the required section and to ignore everything else.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;html&gt;</span>
 <span class="s2">  &lt;head&gt;</span>
