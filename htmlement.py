@@ -176,7 +176,7 @@ class HTMLement(object):
 
         If *data*, is of "type `bytes` and where no encoding was specified, then the encoding
         will be extracted from *data* using "meta tags" if available.
-        Otherwise encoding will default to ISO-8859-1
+        Otherwise encoding will default to "ISO-8859-1"
 
         :param data: HTML data
         :type data: str, bytes
