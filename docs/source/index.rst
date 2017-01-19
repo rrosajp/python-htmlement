@@ -6,13 +6,19 @@
 htmlement Module
 ================
 
-.. toctree::
-    :maxdepth: 1
-
-    includeme
+.. include::
+    ../../README.rst
 
 API
 ---
 
 .. automodule:: htmlement
     :members:
+
+References
+----------
+https://docs.python.org/2/library/xml.etree.elementtree.html#element-objects
+
+https://docs.python.org/2/library/xml.etree.elementtree.html#xpath-support
+
+https://github.com/willforde/python-htmlement

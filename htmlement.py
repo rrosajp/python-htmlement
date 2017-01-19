@@ -27,6 +27,9 @@ else:
     from codecs import open as _open
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse", "HTMLParseError"]
+__copyright__ = "Copyright (C) 2016 William Forde"
+__author__ = "William Forde"
+__license__ = "Public "
 __version__ = "0.1"
 
 
@@ -170,6 +173,10 @@ class HTMLement(object):
         """
         Feeds data to the parser.
 
+        If *data* is of type `bytes` and no encoding was specified, then the encoding
+        will be extracted from *data* using meta tags if available.
+        Will default to iso-8859-1 if unable to find encoding.
+
         :param data: HTML data
         :type data: str, bytes
 
@@ -205,9 +212,6 @@ class HTMLement(object):
     def _make_unicode(self, data):
         """
         Convert *data* from type `bytes` to type `str`.
-
-        Encoding will be extracted from *data* using meta tags if available.
-        Will default to iso-8859-1 if unable to find encoding.
 
         :param data: The html document.
         :type data: bytes
