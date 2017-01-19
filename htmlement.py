@@ -31,6 +31,7 @@ __copyright__ = "Copyright (C) 2016 William Forde"
 __author__ = "William Forde"
 __license__ = "Public "
 __version__ = "0.1"
+__credit__ = "Rafael Marmelo"
 
 
 def fromstring(text, tag=None, attrs=None, encoding=None):
