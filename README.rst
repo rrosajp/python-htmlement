@@ -1,3 +1,6 @@
+.. image:: https://readthedocs.org/projects/python-htmlement/badge/?version=latest
+    :target: http://python-htmlement.readthedocs.io/en/latest/?badge=latest :alt: Documentation Status
+
 .. image:: https://api.codacy.com/project/badge/Grade/6b46406e1aa24b95947b3da6c09a4ab5
     :target: https://www.codacy.com/app/willforde/python-htmlement?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=willforde/python-htmlement&amp;utm_campaign=Badge_Grade
 
