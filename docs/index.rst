@@ -7,7 +7,7 @@ htmlement Module
 ================
 
 .. include::
-    ../../README.rst
+    ../README.rst
 
 API
 ---
