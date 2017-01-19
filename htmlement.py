@@ -22,7 +22,7 @@ if sys.version_info >= (3, 0):
     basestring = (bytes, str)
     _open = open
 else:
-    # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyCompatibility
+    # noinspection PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
     from codecs import open as _open
 
