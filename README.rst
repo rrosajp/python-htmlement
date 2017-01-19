@@ -17,27 +17,27 @@ Installation
 Why another Python HTML Parser?
 -------------------------------
 
-There is no HTML Parser in the Python Standard Library.
-Actually, there is the html.parser.HTMLParser_ that simply traverses the DOM tree and allows us to be notified as
-each tag is being parsed. Usually, when we parse HTML we want to query its elements and extract data from it.
+There is no "HTML Parser" in the "Python" Standard Library.
+Actually, there is the html.parser.HTMLParser_ that simply "traverses the DOM tree" and allows me to be notified as
+each tag is being parsed. Usually, when "parsing HTML" I want to query its elements and extract data from it.
 
-There are a few third party HTML parsers available like "lxml", "html5lib" and "beautifulsoup".
-    * lxml is the best parser available, fast and reliable but sense it requires C libraries, it's not always possible to install.
-    * html5lib is a pure-python library and is designed to conform to the WHATWG HTML specification. But it is very slow at parsing HTML.
-    * beautifulsoup is also a pure-python library but is considered by most to be very slow as well.
+There are a few third party "HTML parsers" available like "lxml", "html5lib" and "beautifulsoup".
+    * "lxml" is the best "parser" available, fast and reliable but since it requires "C libraries", it's not always possible to install.
+    * "html5lib" is a "pure-python library" and is designed to conform to the "WHATWG HTML" specification. But it is very slow at parsing HTML.
+    * "beautifulsoup" is also a "pure-python library" but is considered by most to be "very slow".
 
-The aim of this project is to be a pure-python HTML parser that is also faster than beautifulsoup.
+The "Object" of this project is to be a "pure-python HTML parser" which is also "faster" than "beautifulsoup".
 The most simple way to do this is to use `XPath expressions`__.
-Python does support a simple (read limited) XPath engine inside its ElementTree module.
-Also a nice benefit of using ElementTree is that it can use a C implementation whenever available.
+Python does support a simple (read limited) XPath engine inside its "ElementTree" module.
+A benefit of using "ElementTree" is that it can use a "C implementation" whenever available.
 
-This HTML Parser extends html.parser.HTMLParser_ to build a tree of ElementTree.Element_ instances.
-The returned root element natively supports the ElementTree API.
+This "HTML Parser" extends html.parser.HTMLParser_ to build a tree of ElementTree.Element_ instances.
+The returned "root element" natively supports the ElementTree API.
 
 
 Parsing HTML
 ------------
-Here we’ll be using a sample HTML document that we will parse using htmlement:
+Here I’ll be using a sample "HTML document" that will be "parsed" using "htmlement":
 ::
 
     html = """
@@ -57,7 +57,7 @@ Here we’ll be using a sample HTML document that we will parse using htmlement:
     root = htmlement.fromstring(html)
 
 Root is an ElementTree.Element_ and supports the ElementTree API
-with XPath expressions. With this we are easily able to get both the title and all anchors in the document.
+with XPath expressions. With this I'm easily able to get both the title and all anchors in the document.
 ::
 
     # Get title
@@ -68,7 +68,7 @@ with XPath expressions. With this we are easily able to get both the title and a
     for a in root.iterfind(".//a"):
         print(a.get("href"))
 
-And the output should be like this:
+And the output is as follows:
 ::
 
     Parsing: GitHub
@@ -78,9 +78,9 @@ And the output should be like this:
 
 Parsing HTML with a filter
 --------------------------
-Here we’ll be using a slightly more complex HTML document that we will parse using htmlement with a filter to fetch
-only the menu items. This can be very useful when dealing with large HTML documents sense it can be a lot faster to
-only parse the required section and to ignore everything else.
+Here I’ll be using a slightly more complex "HTML document" that will be "parsed" using "htmlement with a filter" to fetch
+only the menu items. This can be very useful when dealing with large "HTML documents" since it can be a lot faster to
+only "parse the required section" and to ignore everything else.
 ::
 
     html = """
@@ -106,8 +106,8 @@ only parse the required section and to ignore everything else.
     import htmlement
     root = htmlement.fromstring(html, "ul", attrs={"class": "menu"})
 
-In this case we are unable to get the title sense all elements outside the filter ware ignored.
-But this allows us to be able to extract all listitem elements within the menu list and nothing else.
+In this case I are unable to get the title, since all elements outside the filter were ignored.
+But this allows me to be able to extract all "list_item elements" within the menu list and nothing else.
 ::
 
     # Get all listitems
@@ -115,7 +115,7 @@ But this allows us to be able to extract all listitem elements within the menu l
         # Get text from listitem
         print(item.text)
 
-And the output should be like this:
+And the output is as follows:
 ::
 
     Coffee
