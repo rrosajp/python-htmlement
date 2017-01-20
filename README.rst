@@ -106,7 +106,7 @@ only "parse the required section" and to ignore everything else. ::
     import htmlement
     root = htmlement.fromstring(html, "ul", attrs={"class": "menu"})
 
-In this case I are unable to get the title, since all elements outside the filter were ignored.
+In this case I'm not unable to get the title, since all elements outside the filter were ignored.
 But this allows me to be able to extract all "list_item elements" within the menu list and nothing else. ::
 
     # Get all listitems
