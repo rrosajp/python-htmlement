@@ -14,6 +14,10 @@ Installation
 
     pip install git+https://github.com/willforde/python-htmlement.git
 
+Compatibility
+-------------
+This project is compatible with python 2.7, python 3.3 and higher, Including pypy.
+
 Why another Python HTML Parser?
 -------------------------------
 
@@ -37,8 +41,7 @@ The returned "root element" natively supports the ElementTree API.
 
 Parsing HTML
 ------------
-Here I’ll be using a sample "HTML document" that will be "parsed" using "htmlement":
-::
+Here I’ll be using a sample "HTML document" that will be "parsed" using "htmlement": ::
 
     html = """
     <html>
@@ -57,8 +60,7 @@ Here I’ll be using a sample "HTML document" that will be "parsed" using "htmle
     root = htmlement.fromstring(html)
 
 Root is an ElementTree.Element_ and supports the ElementTree API
-with XPath expressions. With this I'm easily able to get both the title and all anchors in the document.
-::
+with XPath expressions. With this I'm easily able to get both the title and all anchors in the document. ::
 
     # Get title
     title = root.find("head/title").text
@@ -68,8 +70,7 @@ with XPath expressions. With this I'm easily able to get both the title and all 
     for a in root.iterfind(".//a"):
         print(a.get("href"))
 
-And the output is as follows:
-::
+And the output is as follows: ::
 
     Parsing: GitHub
     https://github.com/willforde
@@ -80,8 +81,7 @@ Parsing HTML with a filter
 --------------------------
 Here I’ll be using a slightly more complex "HTML document" that will be "parsed" using "htmlement with a filter" to fetch
 only the menu items. This can be very useful when dealing with large "HTML documents" since it can be a lot faster to
-only "parse the required section" and to ignore everything else.
-::
+only "parse the required section" and to ignore everything else. ::
 
     html = """
     <html>
@@ -107,16 +107,14 @@ only "parse the required section" and to ignore everything else.
     root = htmlement.fromstring(html, "ul", attrs={"class": "menu"})
 
 In this case I are unable to get the title, since all elements outside the filter were ignored.
-But this allows me to be able to extract all "list_item elements" within the menu list and nothing else.
-::
+But this allows me to be able to extract all "list_item elements" within the menu list and nothing else. ::
 
     # Get all listitems
     for item in root.iterfind(".//li"):
         # Get text from listitem
         print(item.text)
 
-And the output is as follows:
-::
+And the output is as follows: ::
 
     Coffee
     Tea
