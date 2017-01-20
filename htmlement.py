@@ -207,6 +207,8 @@ class HTMLement(object):
 
         :return: The "root element" of the "element tree".
         :rtype: xml.etree.ElementTree.Element
+
+        :raises RuntimeError: If no element, matching search criteria, was found when a filter is given.
         """
         return self._parser.close()
 
@@ -340,7 +342,10 @@ class _ParseHTML(HTMLParser):
 
     def close(self):
         self._flush()
-        if self._root is not None:
+        if self.enabled is False:
+            msg = "Unable to find requested section with tag of '{}' and attributes of {}"
+            raise RuntimeError(msg.format(self.tag, self.attrs))
+        elif self._root is not None:
             return self._root
         else:
             # Search the root element to find a proper html root element if one exists
