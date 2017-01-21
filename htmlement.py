@@ -20,11 +20,9 @@ if sys.version_info >= (3, 0):
     # noinspection PyCompatibility
     from html.parser import HTMLParser
     basestring = (bytes, str)
-    _open = open
 else:
     # noinspection PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
-    from codecs import open as _open
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse", "HTMLParseError"]
 __copyright__ = "Copyright (C) 2016 William Forde"
@@ -98,7 +96,7 @@ def parse(source, tag=None, attrs=None, encoding=None):
     """
     # Assume that source is a file pointer if no read methods is found
     if hasattr(source, "read"):
-        source = _open(source, "rb", encoding=encoding)
+        source = open(source, "rb").decode(encoding)
         close_source = True
     else:
         close_source = False
