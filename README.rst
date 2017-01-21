@@ -1,11 +1,14 @@
 .. image:: https://badge.fury.io/py/htmlement.svg
-    :target: https://badge.fury.io/py/htmlement
+    :target: https://badge.fury.io/py/htmlement :alt: pypi package
 
 .. image:: https://readthedocs.org/projects/python-htmlement/badge/?version=latest
     :target: http://python-htmlement.readthedocs.io/en/latest/?badge=latest :alt: Documentation Status
 
+.. image:: https://travis-ci.org/willforde/python-htmlement.svg?branch=master
+    :target: https://travis-ci.org/willforde/python-htmlement :alt: Travis CI
+
 .. image:: https://api.codacy.com/project/badge/Grade/6b46406e1aa24b95947b3da6c09a4ab5
-    :target: https://www.codacy.com/app/willforde/python-htmlement?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=willforde/python-htmlement&amp;utm_campaign=Badge_Grade
+    :target: https://www.codacy.com/app/willforde/python-htmlement?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=willforde/python-htmlement&amp;utm_campaign=Badge_Grade :alt: Codacy Rating
 
 Installation
 ------------
