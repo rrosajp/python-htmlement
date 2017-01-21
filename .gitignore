@@ -1,4 +1,5 @@
 # general things to ignore
+docs/_static/
 docs/build/
 dist/
 *.egg-info/
@@ -6,7 +7,6 @@ dist/
 *.py[cod]
 __pycache__/
 *.so
-*~
 .idea/
 build/
-docs/_static/
+.cache/
