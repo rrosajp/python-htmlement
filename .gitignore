@@ -6,7 +6,8 @@ dist/
 *.egg
 *.py[cod]
 __pycache__/
-*.so
 .idea/
 build/
 .cache/
+.tox/
+.coverage
