@@ -62,9 +62,10 @@ def example_filter():
     Useful for speeding up the parsing of html pages.
 
     >>> example_filter()
-    Coffee
-    Tea
-    Milk
+    Menu Items
+    - Coffee
+    - Tea
+    - Milk
     """
     html = """
     <html>
@@ -115,16 +116,17 @@ def example_complex():
     Url = /pycon2016/alex-martelli-exception-and-error-handling-in-python-2-and-python-3
     Title = Alex Martelli - Exception and error handling in Python 2 and Python 3
     Date = Jun 1, 2016
-
+    <BLANKLINE>
     Image = /presentations/eef8ffe5b6784f7cb84948cf866b2608/thumb_slide_0.jpg
     Url = /presentations/518cae54da12460e895163d809e25933/thumb_slide_0.jpg
     Title = Jake Vanderplas - Statistics for Hackers
     Date = May 29, 2016
-
+    <BLANKLINE>
     Image = /presentations/8b3ee51b5fcc4a238c4cb4b7787979ac/thumb_slide_0.jpg
     Url = /pycon2016/brett-slatkin-refactoring-python-why-and-how-to-restructure-your-code
     Title = Brett Slatkin - Refactoring Python: Why and how to restructure your code
     Date = May 29, 2016
+    <BLANKLINE>
     """
     html = """
     <html>
@@ -181,7 +183,7 @@ def example_complex():
     """
 
     # Parse the document
-    parser = HTMLement("div", attrs={"class": "talks"})
+    parser = HTMLement("div", attrs={"class": "talks", "no": False})
     parser.feed(html)
     root = parser.close()
 
