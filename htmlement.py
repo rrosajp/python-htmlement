@@ -245,12 +245,19 @@ class ParseHTML(HTMLParser):
         self._root = None  # root element
         self._data = []  # data collector
         self._factory = Etree.Element
+        self.enabled = not tag
+        self._unw_attrs = []
+        self.tag = tag
 
         # Split attributes into wanted and unwanted attributes
-        self._unw_attrs = [attrs.pop(key) for key, value in attrs.items() if value is False] if attrs else []
-        self.attrs = attrs if attrs else {}
-        self.enabled = not tag
-        self.tag = tag
+        if attrs:
+            self.attrs = attrs
+            for key, value in attrs.copy().items():
+                if value is False:
+                    self._unw_attrs.append(key)
+                    del attrs[key]
+        else:
+            self.attrs = {}
 
         # Some tags in html do not require closing tags so thoes tags will need to be auto closed (Void elements)
         # Refer to: https://www.w3.org/TR/html/syntax.html#void-elements
