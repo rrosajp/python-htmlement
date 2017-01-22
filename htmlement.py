@@ -163,8 +163,8 @@ class HTMLement(object):
     .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
     __ XPath_
     """
-    def __init__(self, tag=None, attrs=None, encoding=None):
-        self._parser = _ParseHTML(tag, attrs)
+    def __init__(self, tag="", attrs=None, encoding=""):
+        self._parser = ParseHTML(tag, attrs)
         self.encoding = encoding
         self.finished = False
 
@@ -237,8 +237,8 @@ class HTMLement(object):
         return data.decode("iso-8859-1")
 
 
-class _ParseHTML(HTMLParser):
-    def __init__(self, tag, attrs):
+class ParseHTML(HTMLParser):
+    def __init__(self, tag="", attrs=None):
         # Initiate HTMLParser
         HTMLParser.__init__(self)
         self.convert_charrefs = True
