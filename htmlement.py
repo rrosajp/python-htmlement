@@ -120,23 +120,6 @@ def parse(source, tag="", attrs=None, encoding=""):
             source.close()
 
 
-# Required for raiseing HTMLParseError in python3, emulates python2
-class HTMLParseError(Exception):
-    """Exception raised for all parse errors."""
-    def __init__(self, msg, position=(None, None)):
-        self.msg = msg
-        self.lineno = position[0]
-        self.offset = position[1]
-
-    def __str__(self):
-        result = self.msg
-        if self.lineno is not None:
-            result += ", at line %d" % self.lineno
-        if self.offset is not None:
-            result += ", column %d" % self.offset
-        return result
-
-
 class HTMLement(object):
     """
     Python HTMLParser extension with ElementTree Parser support.
@@ -237,6 +220,7 @@ class HTMLement(object):
         return data.decode("iso-8859-1")
 
 
+# noinspection PyAbstractClass
 class ParseHTML(HTMLParser):
     def __init__(self, tag="", attrs=None):
         # Initiate HTMLParser
@@ -362,9 +346,6 @@ class ParseHTML(HTMLParser):
             else:
                 # Proper root found
                 return proper_root
-
-    def error(self, message):
-        raise HTMLParseError(message, self.getpos())
 
     def _flush(self):
         if self._data:
