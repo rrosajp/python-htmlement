@@ -5,15 +5,10 @@
 from __future__ import unicode_literals
 
 # Standard library imports
+from xml.etree import ElementTree as Etree
 import warnings
 import sys
 import re
-
-# Import the faster C implementation of ElementTree whenever available
-try:
-    from xml.etree import cElementTree as Etree
-except ImportError:
-    from xml.etree import ElementTree as Etree
 
 # Check python version to set the object that can detect non unicode strings
 if sys.version_info >= (3, 0):
