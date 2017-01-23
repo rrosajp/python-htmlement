@@ -36,6 +36,7 @@ There are a few third party "HTML parsers" available like "lxml", "html5lib" and
     * "beautifulsoup" is also a "pure-python library" but is considered by most to be "very slow".
 
 The "Object" of this project is to be a "pure-python HTML parser" which is also "faster" than "beautifulsoup".
+And like "beautifulsoup", will also parse invalid html.
 The most simple way to do this is to use `XPath expressions`__.
 Python does support a simple (read limited) XPath engine inside its "ElementTree" module.
 A benefit of using "ElementTree" is that it can use a "C implementation" whenever available.
