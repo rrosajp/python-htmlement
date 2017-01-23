@@ -114,7 +114,7 @@ def test_extra_tag():
 
 
 def test_tag_match():
-    html = "<html><body><div test='attribute'><p>text<p></div></body></html>"
+    html = "<html><body><div test='attribute'><p>text</p></div></body></html>"
     root = quick_parse_filter(html, "div")
     assert root.tag == "div"
     assert root[0].tag == "p"
@@ -124,12 +124,11 @@ def test_tag_no_match():
     html = "<html><body></body></html>"
     with pytest.raises(RuntimeError) as excinfo:
         quick_parse_filter(html, "div")
-
     excinfo.match("Unable to find requested section with tag of")
 
 
 def test_attrib_match():
-    html = "<html><body><div test='attribute'><p>text<p></div><div test='yes'>text</div></body></html>"
+    html = "<html><body><div test='attribute'><p>text</p></div><div test='yes'>text</div></body></html>"
     root = quick_parse_filter(html, "div", {"test": "yes"})
     assert root.tag == "div"
     assert root.get("test") == "yes"
@@ -137,16 +136,15 @@ def test_attrib_match():
 
 
 def test_attrib_no_match():
-    html = "<html><body><div><p>text<p></div><div>text</div></body></html>"
+    html = "<html><body><div><p>text</p></div><div>text</div></body></html>"
     with pytest.raises(RuntimeError) as excinfo:
         quick_parse_filter(html, "div", {"test": "yes"})
-
     excinfo.match("Unable to find requested section with tag of")
 
 
 def test_attrib_match_name():
     # Search for any div tag with a attribute of src of any value
-    html = "<html><body><div test='attribute'><p>text<p></div><div src='foo bar'>text</div></body></html>"
+    html = "<html><body><div test='attribute'><p>text</p></div><div src='foo bar'>text</div></body></html>"
     root = quick_parse_filter(html, "div", {"src": True})
     assert root.tag == "div"
     assert root.get("src")
@@ -155,7 +153,7 @@ def test_attrib_match_name():
 
 def test_attrib_match_unwanted():
     # Search for a div with a test attribute but not a src attribute
-    html = "<html><body><div src='attribute' test='yes'><p>text<p></div><div test='yes'>text</div></body></html>"
+    html = "<html><body><div src='attribute' test='yes'><p>text</p></div><div test='yes'>text</div></body></html>"
     root = quick_parse_filter(html, "div", {"test": "yes", "src": False})
     assert root.tag == "div"
     assert root.get("test") == "yes"
@@ -164,7 +162,7 @@ def test_attrib_match_unwanted():
 
 
 def test_tag_match_badhtml():
-    html = "<html><body><div test='attribute'><p>text<p></body></html>"
+    html = "<html><body><div test='attribute'><p>text</div></body></html>"
     root = quick_parse_filter(html, "div")
     assert root.tag == "div"
     assert root[0].tag == "p"
