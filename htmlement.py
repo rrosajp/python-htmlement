@@ -19,7 +19,7 @@ else:
     # noinspection PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
 
-__all__ = ["HTMLement", "fromstring", "fromstringlist", "parse", "HTMLParseError"]
+__all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
 __copyright__ = "Copyright (C) 2016 William Forde"
 __author__ = "William Forde"
 __license__ = "Public "
@@ -127,11 +127,15 @@ class HTMLement(object):
     section is found, does the parser start parsing the "HTML document". The element that matches the search criteria
     will then become the new "root element".
 
-    :param tag: (optional) Name of "tag / element" which is used to filter down "the tree" to a required section.
-    :type tag: str
+    Attributes are given as a dict of {'name': 'value'}. Value can be the string to match, or `True` or `False.`
+    `True` will match any attribute with given name and any value.
+    `False` will only give a match if given attribute does not exists in the element.
 
-    :param attrs: (optional) The attributes of the element, that will be used, when searching for the required section.
+    :type tag: str
+    :param str tag: (optional) Name of "tag / element" which is used to filter down "the tree" to a required section.
+
     :type attrs: dict
+    :param attrs: (optional) The attributes of the element, that will be used, when searchingfor the required section.
 
     :param encoding: (optional) Encoding used, when decoding the source data before feeding it to the parser.
     :type encoding: str
