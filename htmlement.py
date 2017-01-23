@@ -14,7 +14,6 @@ import re
 if sys.version_info >= (3, 0):
     # noinspection PyCompatibility
     from html.parser import HTMLParser
-    basestring = (bytes, str)
 else:
     # noinspection PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
