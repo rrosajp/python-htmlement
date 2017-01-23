@@ -287,6 +287,7 @@ def test_no_encoding_with_header_type8(recwarn):
     for w in recwarn.list:
         assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
+
 def test_no_encoding_no_header():
     # Check that I can parse a simple tree
     html = b"<html><head></head><body>text</body></html>"
