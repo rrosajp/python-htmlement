@@ -19,7 +19,7 @@ def readme():
 
 
 setup(name='htmlement',
-      version='0.1',
+      version='0.2',
       description='Python HTMLParser extension with ElementTree support.',
       long_description=readme(),
       keywords='html html5 parsehtml htmlparser elementtree dom',
@@ -42,5 +42,4 @@ setup(name='htmlement',
       author='William Forde',
       author_email='willforde@gmail.com',
       license='MIT License',
-      py_modules=['htmlement'],
-      zip_safe=False)
+      py_modules=['htmlement'])
