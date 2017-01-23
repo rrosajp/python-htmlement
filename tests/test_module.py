@@ -161,3 +161,10 @@ def test_attrib_match_unwanted():
     assert root.get("test") == "yes"
     assert "src" not in root.attrib
     assert root.text == "text"
+
+
+def test_tag_match_badhtml():
+    html = "<html><body><div test='attribute'><p>text<p></body></html>"
+    root = quick_parse_filter(html, "div")
+    assert root.tag == "div"
+    assert root[0].tag == "p"
