@@ -32,7 +32,7 @@ __version__ = "0.1"
 __credit__ = "Rafael Marmelo"
 
 
-def fromstring(text, tag=None, attrs=None, encoding=None):
+def fromstring(text, tag="", attrs=None, encoding=""):
     """
     Parse's "HTML" document from a string into an element_tree.
 
@@ -54,7 +54,7 @@ def fromstring(text, tag=None, attrs=None, encoding=None):
     return parser.close()
 
 
-def fromstringlist(sequence, tag=None, attrs=None, encoding=None):
+def fromstringlist(sequence, tag="", attrs=None, encoding=""):
     """
     Parses an HTML document from a sequence of "HTML sections" into an element tree.
 
@@ -77,7 +77,7 @@ def fromstringlist(sequence, tag=None, attrs=None, encoding=None):
     return parser.close()
 
 
-def parse(source, tag=None, attrs=None, encoding=None):
+def parse(source, tag="", attrs=None, encoding=""):
     """
     Load an external HTML document into element tree.
 
