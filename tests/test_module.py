@@ -213,7 +213,9 @@ def test_no_encoding_with_header_type1(recwarn):
     html = b"<html><head><meta charset='utf-8'/></head><body>text</body></html>"
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type2(recwarn):
@@ -221,7 +223,9 @@ def test_no_encoding_with_header_type2(recwarn):
     html = b'<html><head><meta charset="utf-8"/></head><body>text</body></html>'
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type3(recwarn):
@@ -229,7 +233,9 @@ def test_no_encoding_with_header_type3(recwarn):
     html = b"<html><head><meta charset='utf-8'></head><body>text</body></html>"
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type4(recwarn):
@@ -237,7 +243,9 @@ def test_no_encoding_with_header_type4(recwarn):
     html = b'<html><head><meta charset="utf-8"></head><body>text</body></html>'
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type5(recwarn):
@@ -245,7 +253,9 @@ def test_no_encoding_with_header_type5(recwarn):
     html = b"<html><head><meta content='text/html; charset=utf-8'/></head><body>text</body></html>"
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type6(recwarn):
@@ -253,7 +263,9 @@ def test_no_encoding_with_header_type6(recwarn):
     html = b'<html><head><meta content="text/html; charset=utf-8"/></head><body>text</body></html>'
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type7(recwarn):
@@ -261,7 +273,9 @@ def test_no_encoding_with_header_type7(recwarn):
     html = b"<html><head><meta content='text/html; charset=utf-8'></head><body>text</body></html>"
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 
 def test_no_encoding_with_header_type8(recwarn):
@@ -269,8 +283,9 @@ def test_no_encoding_with_header_type8(recwarn):
     html = b'<html><head><meta content="text/html; charset=utf-8"></head><body>text</body></html>'
     quick_parsehtml(html)
     # Check that no warnings ware raised
-    assert not recwarn
-
+    warnmsg = "Unable to determine encoding, defaulting to iso-8859-1"
+    for w in recwarn.list:
+        assert issubclass(w.category, UnicodeWarning) is False or not w.message == warnmsg
 
 def test_no_encoding_no_header():
     # Check that I can parse a simple tree
@@ -311,7 +326,7 @@ def test_parse_file_object():
 def test_parse_filename():
     # Create temp file and add html data to it
     html = "<html><body></body></html>"
-    fileobj = tempfile.NamedTemporaryFile("w", encoding="utf8", delete=False)
+    fileobj = tempfile.NamedTemporaryFile("w", delete=False)
     fileobj.write(html)
     filename = fileobj.name
     fileobj.close()
