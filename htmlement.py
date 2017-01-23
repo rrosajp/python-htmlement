@@ -95,7 +95,7 @@ def parse(source, tag="", attrs=None, encoding=""):
     :raises UnicodeDecodeError: If decoding of *source* fails.
     """
     # Assume that source is a file pointer if no read methods is found
-    if hasattr(source, "read"):
+    if not hasattr(source, "read"):
         source = open(source, "rb")
         close_source = True
     else:
