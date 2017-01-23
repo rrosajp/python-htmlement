@@ -227,7 +227,7 @@ class HTMLement(object):
             charset_refind = b'<meta.+?charset=[\'"]*(.+?)["\'].*?>'
             charset = re.search(charset_refind, data[:end_head_tag], re.IGNORECASE)
             if charset:
-                self.encoding = encoding = str(charset.group(1))
+                self.encoding = encoding = charset.group(1).decode()
                 return data.decode(encoding)
 
         # Decode the string into unicode using default encoding
