@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import xml.etree.ElementTree as Etree
 import htmlement
+import examples
 import tempfile
 import pytest
 import io
@@ -340,3 +341,21 @@ def test_parse_filename():
         assert root[0].tag == "body"
     finally:
         os.remove(filename)
+
+
+# ####################### Examples Tests ####################### #
+
+
+def test_example_simple():
+    # Check that there is no errors
+    examples.example_simple()
+
+
+def test_example_filter():
+    # Check that there is no errors
+    examples.example_filter()
+
+
+def test_example_complex():
+    # Check that there is no errors
+    examples.example_complex()
