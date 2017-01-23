@@ -297,6 +297,7 @@ def test_no_encoding_no_header():
 
 # ####################### Funtion Tests ####################### #
 
+
 def test_fromstring():
     # Check that I can parse a simple tree
     html = "<html><body></body></html>"
