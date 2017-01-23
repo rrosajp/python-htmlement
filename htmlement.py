@@ -41,7 +41,6 @@ def fromstring(text, tag="", attrs=None, encoding=""):
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
-    :raises HTMLParseError: If parsing of HTML document fails.
     :raises UnicodeDecodeError: If decoding of *text* fails.
     """
     parser = HTMLement(tag, attrs, encoding)
@@ -63,7 +62,6 @@ def fromstringlist(sequence, tag="", attrs=None, encoding=""):
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
-    :raises HTMLParseError: If parsing of "HTML document" fails.
     :raises UnicodeDecodeError: If decoding of a section within *sequence* fails.
     """
     parser = HTMLement(tag, attrs, encoding)
@@ -86,7 +84,6 @@ def parse(source, tag="", attrs=None, encoding=""):
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
-    :raises HTMLParseError: If parsing of "HTML document" fails.
     :raises UnicodeDecodeError: If decoding of *source* fails.
     """
     # Assume that source is a file pointer if no read methods is found
@@ -139,8 +136,6 @@ class HTMLement(object):
 
     :param encoding: (optional) Encoding used, when decoding the source data before feeding it to the parser.
     :type encoding: str
-
-    :raises HTMLParseError: If parsing of "HTML document" fails.
 
     .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
     __ XPath_
