@@ -5,19 +5,22 @@
 from __future__ import unicode_literals
 import xml.etree.ElementTree as Etree
 import htmlement
+import tempfile
 import pytest
+import io
+import os
 
 
-def quick_parsehtml(html):
-    obj = htmlement.HTMLement()
+def quick_parsehtml(html, encoding=""):
+    obj = htmlement.HTMLement(encoding=encoding)
     obj.feed(html)
     root = obj.close()
     assert Etree.iselement(root)
     return root
 
 
-def quick_parse_filter(html, tag, attrs=None):
-    obj = htmlement.HTMLement(tag, attrs)
+def quick_parse_filter(html, tag, attrs=None, encoding=""):
+    obj = htmlement.HTMLement(tag, attrs, encoding=encoding)
     obj.feed(html)
     return obj.close()
 
@@ -28,10 +31,25 @@ def test_initialization():
     assert isinstance(obj, htmlement.HTMLement)
 
 
+# ############################# HTML Test ############################## #
+
+
 def test_basic_tree():
     # Check that I can parse a simple tree
     html = "<html><body></body></html>"
     root = quick_parsehtml(html)
+    assert root.tag == "html"
+    assert root[0].tag == "body"
+
+
+def test_basic_partial():
+    # Check that I can parse a simple tree segment at a time
+    html = "<html><body></body></html>"
+    obj = htmlement.HTMLement()
+    obj.feed(html[:9])
+    obj.feed(html[9:])
+    root = obj.close()
+    assert Etree.iselement(root)
     assert root.tag == "html"
     assert root[0].tag == "body"
 
@@ -168,12 +186,15 @@ def test_tag_match_badhtml():
     assert root[0].tag == "p"
 
 
-def test_partial():
+def test_partial_filter():
     # Check that the
-    obj = htmlement.HTMLement(tag, attrs)
-    obj.feed(html)
-    return obj.close()
-
+    html = "<html><body><div test='attribute'><p>text</p></div></body></html>"
+    obj = htmlement.HTMLement("div")
+    obj.feed(html[:51])
+    obj.feed(html[51:])
+    root = obj.close()
+    assert root.tag == "div"
+    assert root[0].tag == "p"
 
 
 # ####################### Unicode Decoding Test ####################### #
@@ -182,7 +203,123 @@ def test_partial():
 def test_with_encoding():
     # Check that I can parse a simple tree
     html = b"<html><body></body></html>"
-    root = quick_parsehtml(html, )
+    root = quick_parsehtml(html, encoding="utf-8")
     assert root.tag == "html"
     assert root[0].tag == "body"
 
+
+def test_no_encoding_with_header_type1(recwarn):
+    # Check for charset header type one
+    html = b"<html><head><meta charset='utf-8'/></head><body>text</body></html>"
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type2(recwarn):
+    # Check for charset header type one
+    html = b'<html><head><meta charset="utf-8"/></head><body>text</body></html>'
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type3(recwarn):
+    # Check for charset header type one
+    html = b"<html><head><meta charset='utf-8'></head><body>text</body></html>"
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type4(recwarn):
+    # Check for charset header type one
+    html = b'<html><head><meta charset="utf-8"></head><body>text</body></html>'
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type5(recwarn):
+    # Check for charset header type one
+    html = b"<html><head><meta content='text/html; charset=utf-8'/></head><body>text</body></html>"
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type6(recwarn):
+    # Check for charset header type one
+    html = b'<html><head><meta content="text/html; charset=utf-8"/></head><body>text</body></html>'
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type7(recwarn):
+    # Check for charset header type one
+    html = b"<html><head><meta content='text/html; charset=utf-8'></head><body>text</body></html>"
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_with_header_type8(recwarn):
+    # Check for charset header type one
+    html = b'<html><head><meta content="text/html; charset=utf-8"></head><body>text</body></html>'
+    quick_parsehtml(html)
+    # Check that no warnings ware raised
+    assert not recwarn
+
+
+def test_no_encoding_no_header():
+    # Check that I can parse a simple tree
+    html = b"<html><head></head><body>text</body></html>"
+    with pytest.warns(UnicodeWarning):
+        quick_parsehtml(html)
+
+
+# ####################### Funtion Tests ####################### #
+
+def test_fromstring():
+    # Check that I can parse a simple tree
+    html = "<html><body></body></html>"
+    root = htmlement.fromstring(html)
+    assert Etree.iselement(root)
+    assert root.tag == "html"
+    assert root[0].tag == "body"
+
+
+def test_fromstringlist():
+    # Check that I can parse a simple tree
+    sequence = ["<html><body>", "</body></html>"]
+    root = htmlement.fromstringlist(sequence)
+    assert Etree.iselement(root)
+    assert root.tag == "html"
+    assert root[0].tag == "body"
+
+
+def test_parse_file_object():
+    html = "<html><body></body></html>"
+    fileobj = io.StringIO(html)
+    root = htmlement.parse(fileobj, encoding="utf8")
+    assert Etree.iselement(root)
+    assert root.tag == "html"
+    assert root[0].tag == "body"
+
+
+def test_parse_filename():
+    # Create temp file and add html data to it
+    html = "<html><body></body></html>"
+    fileobj = tempfile.NamedTemporaryFile("w", encoding="utf8", delete=False)
+    fileobj.write(html)
+    filename = fileobj.name
+    fileobj.close()
+
+    try:
+        root = htmlement.parse(filename, encoding="utf8")
+        assert Etree.iselement(root)
+        assert root.tag == "html"
+        assert root[0].tag == "body"
+    finally:
+        os.remove(filename)
