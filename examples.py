@@ -136,7 +136,7 @@ def example_complex():
       <body>
         <div class="main">
           <h1>Talks by PyCon 2016</h1>
-          <div class="talks">
+          <div class="talks" id="d5esfbb5d03adfdfede8a342238d6a68">
             <div class="talk" data-id="c7f1fbb5d03a409d9de8abb5238d6a68">
               <a href="/pycon2016/kelsey-gilmore-innis-seriously-strong-security-on-a-shoestring">
                 <img src="/presentations/c7f1fbb5d03a409d9de8abb5238d6a68/thumb_slide_0.jpg">
@@ -183,7 +183,7 @@ def example_complex():
     """
 
     # Parse the document
-    parser = HTMLement("div", attrs={"class": "talks", "no": False})
+    parser = HTMLement("div", attrs={"class": "talks", "id": True})
     parser.feed(html)
     root = parser.close()
 
@@ -204,6 +204,7 @@ def example_complex():
         date = talk.find("./div/p").text
         print("Date = {}".format(date))
         print("")
+
 
 if __name__ == "__main__":
     example_simple()
