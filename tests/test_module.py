@@ -166,3 +166,23 @@ def test_tag_match_badhtml():
     root = quick_parse_filter(html, "div")
     assert root.tag == "div"
     assert root[0].tag == "p"
+
+
+def test_partial():
+    # Check that the
+    obj = htmlement.HTMLement(tag, attrs)
+    obj.feed(html)
+    return obj.close()
+
+
+
+# ####################### Unicode Decoding Test ####################### #
+
+
+def test_with_encoding():
+    # Check that I can parse a simple tree
+    html = b"<html><body></body></html>"
+    root = quick_parsehtml(html, )
+    assert root.tag == "html"
+    assert root[0].tag == "body"
+

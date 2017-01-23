@@ -166,7 +166,7 @@ class HTMLement(object):
     def __init__(self, tag="", attrs=None, encoding=""):
         self._parser = ParseHTML(tag, attrs)
         self.encoding = encoding
-        self.finished = False
+        self._finished = False
 
     def feed(self, data):
         """
@@ -182,7 +182,7 @@ class HTMLement(object):
         :raises UnicodeDecodeError: If decoding of *data* fails.
         """
         # Skip feeding data into parser if we already have what we want
-        if self.finished is True:
+        if self._finished is True:
             return None
 
         # Make sure that we have unicode before continuing
@@ -196,7 +196,7 @@ class HTMLement(object):
         try:
             self._parser.feed(data)
         except EOFError:
-            self.finished = True
+            self._finished = True
             self._parser.reset()
 
     def close(self):
