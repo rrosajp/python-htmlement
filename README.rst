@@ -27,7 +27,7 @@ Why another Python HTML Parser?
 -------------------------------
 
 There is no "HTML Parser" in the "Python" Standard Library.
-Actually, there is the html.parser.HTMLParser_ that simply "traverses the DOM tree" and allows me to be notified as
+Actually, there is the `html.parser.HTMLParser`_ that simply "traverses the DOM tree" and allows me to be notified as
 each tag is being parsed. Usually, when "parsing HTML" I want to query its elements and extract data from it.
 
 There are a few third party "HTML parsers" available like "lxml", "html5lib" and "beautifulsoup".
@@ -41,7 +41,7 @@ The most simple way to do this is to use `XPath expressions`__.
 Python does support a simple (read limited) XPath engine inside its "ElementTree" module.
 A benefit of using "ElementTree" is that it can use a "C implementation" whenever available.
 
-This "HTML Parser" extends html.parser.HTMLParser_ to build a tree of ElementTree.Element_ instances.
+This "HTML Parser" extends `html.parser.HTMLParser`_ to build a tree of `ElementTree.Element`_ instances.
 The returned "root element" natively supports the ElementTree API.
 
 
@@ -127,7 +127,7 @@ And the output is as follows: ::
     Milk
 
 .. seealso::
-    More examples can be found in examples.py_.
+    More examples can be found in `examples.py`_.
 
 Compatibility
 -------------
@@ -139,7 +139,7 @@ Compatibility
 * pypy
 
 .. _html.parser.HTMLParser: https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser
-.. _ElementTree.Element : https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
+.. _ElementTree.Element: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
 .. _examples.py: https://github.com/willforde/python-htmlement/blob/master/examples.py
 .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
 __ XPath_

@@ -28,14 +28,14 @@ __credit__ = "Rafael Marmelo"
 
 def fromstring(text, tag="", attrs=None, encoding=""):
     """
-    Parse's "HTML" document from a string into an element_tree.
+    Parse's "HTML" document from a string into an element tree.
 
     :param text: The "HTML" document to parse.
-    :type text: str, bytes
+    :type text: str or bytes
 
     :param str tag: (optional) see :class:`HTMLement` for details.
     :param dict attrs: (optional) see :class:`HTMLement` for details.
-    :param str encoding: (optional) The encoding used for/in *text*
+    :param str encoding: (optional) The encoding used for *text*
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
@@ -49,10 +49,10 @@ def fromstring(text, tag="", attrs=None, encoding=""):
 
 def fromstringlist(sequence, tag="", attrs=None, encoding=""):
     """
-    Parses an HTML document from a sequence of "HTML sections" into an element tree.
+    Parses an "HTML document" from a sequence of "HTML sections" into an element tree.
 
     :param sequence: A sequence of "HTML sections" to parse.
-    :type sequence: list[str,bytes]
+    :type sequence: list(str or bytes)
 
     :param str tag: (optional) see :class:`HTMLement` for details.
     :param dict attrs: (optional) see :class:`HTMLement` for details.
@@ -71,10 +71,10 @@ def fromstringlist(sequence, tag="", attrs=None, encoding=""):
 
 def parse(source, tag="", attrs=None, encoding=""):
     """
-    Load an external HTML document into element tree.
+    Load an external "HTML document" into an element tree.
 
     :param source: A filename or file like object containing HTML data.
-    :type source: str, io.TextIOBase
+    :type source: str or io.TextIOBase
 
     :param str tag: (optional) see :class:`HTMLement` for details.
     :param dict attrs: (optional) see :class:`HTMLement` for details.
@@ -123,15 +123,15 @@ class HTMLement(object):
     section is found, does the parser start parsing the "HTML document". The element that matches the search criteria
     will then become the new "root element".
 
-    Attributes are given as a dict of {'name': 'value'}. Value can be the string to match, or `True` or `False.`
+    Attributes are given as a dict of {'name': 'value'}. Value can be the string to match, `True` or `False.`
     `True` will match any attribute with given name and any value.
-    `False` will only give a match if given attribute does not exists in the element.
+    `False` will only give a match if given attribute does not exist in the element.
 
-    :type tag: str
     :param str tag: (optional) Name of "tag / element" which is used to filter down "the tree" to a required section.
+    :type tag: str
 
-    :type attrs: dict
     :param attrs: (optional) The attributes of the element, that will be used, when searchingfor the required section.
+    :type attrs: dict(str, str)
 
     :param encoding: (optional) Encoding used, when decoding the source data before feeding it to the parser.
     :type encoding: str
@@ -148,12 +148,12 @@ class HTMLement(object):
         """
         Feeds data to the parser.
 
-        If *data*, is of "type `bytes` and where no encoding was specified, then the encoding
-        will be extracted from *data* using "meta tags" if available.
+        If *data*, is of type :class:`bytes` and where no encoding was specified, then the encoding
+        will be extracted from *data* using "meta tags", if available.
         Otherwise encoding will default to "ISO-8859-1"
 
         :param data: HTML data
-        :type data: str, bytes
+        :type data: str or bytes
 
         :raises UnicodeDecodeError: If decoding of *data* fails.
         """
@@ -182,18 +182,18 @@ class HTMLement(object):
         :return: The "root element" of the "element tree".
         :rtype: xml.etree.ElementTree.Element
 
-        :raises RuntimeError: If no element, matching search criteria, was found when a filter is given.
+        :raises RuntimeError: If no element matching search criteria was found.
         """
         return self._parser.close()
 
     def _make_unicode(self, data):
         """
-        Convert *data* from type `bytes` to type `str`.
+        Convert *data* from type :class:`bytes` to type :class:`str`.
 
         :param data: The html document.
         :type data: bytes
 
-        :return: HTML data decoded into str(unicode).
+        :return: HTML data decoded.
         :rtype: str
         """
         # Atemp to find the encoding from the html source
