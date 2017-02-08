@@ -26,59 +26,53 @@ __version__ = "0.2.1"
 __credit__ = "Rafael Marmelo"
 
 
-def fromstring(text, tag="", attrs=None, encoding=""):
+def fromstring(text, **kwargs):
     """
     Parse's "HTML" document from a string into an element tree.
 
     :param text: The "HTML" document to parse.
     :type text: str or bytes
 
-    :param str tag: (optional) see :class:`HTMLement` for details.
-    :param dict attrs: (optional) see :class:`HTMLement` for details.
-    :param str encoding: (optional) The encoding used for *text*
+    :param kwargs: see :class:`HTMLement` for details.
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises UnicodeDecodeError: If decoding of *text* fails.
     """
-    parser = HTMLement(tag, attrs, encoding)
+    parser = HTMLement(**kwargs)
     parser.feed(text)
     return parser.close()
 
 
-def fromstringlist(sequence, tag="", attrs=None, encoding=""):
+def fromstringlist(sequence, **kwargs):
     """
     Parses an "HTML document" from a sequence of "HTML sections" into an element tree.
 
     :param sequence: A sequence of "HTML sections" to parse.
     :type sequence: list(str or bytes)
 
-    :param str tag: (optional) see :class:`HTMLement` for details.
-    :param dict attrs: (optional) see :class:`HTMLement` for details.
-    :param str encoding: (optional) The encoding used for each section within *sequence*
+    :param kwargs: see :class:`HTMLement` for details.
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises UnicodeDecodeError: If decoding of a section within *sequence* fails.
     """
-    parser = HTMLement(tag, attrs, encoding)
+    parser = HTMLement(**kwargs)
     for text in sequence:
         parser.feed(text)
     return parser.close()
 
 
-def parse(source, tag="", attrs=None, encoding=""):
+def parse(source, **kwargs):
     """
     Load an external "HTML document" into an element tree.
 
     :param source: A filename or file like object containing HTML data.
     :type source: str or io.TextIOBase
 
-    :param str tag: (optional) see :class:`HTMLement` for details.
-    :param dict attrs: (optional) see :class:`HTMLement` for details.
-    :param str encoding: (optional) The encoding used for *source*.
+    :param kwargs: see :class:`HTMLement` for details.
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
@@ -93,7 +87,7 @@ def parse(source, tag="", attrs=None, encoding=""):
         close_source = False
 
     try:
-        parser = HTMLement(tag, attrs, encoding)
+        parser = HTMLement(**kwargs)
         while True:
             # Read in 64k at a time
             data = source.read(65536)
