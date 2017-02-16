@@ -21,7 +21,7 @@ else:
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
 __copyright__ = "Copyright (C) 2016 William Forde"
 __author__ = "William Forde"
-__license__ = "Public "
+__license__ = "MIT"
 __version__ = "0.2.1"
 __credit__ = "Rafael Marmelo"
 
