@@ -58,53 +58,74 @@ __credit__ = "Rafael Marmelo"
 name2codepoint["apos"] = 0x0027
 
 
-def fromstring(text, **kwargs):
+def fromstring(text, tag="", attrs=None, encoding=""):
     """
     Parse's "HTML" document from a string into an element tree.
 
     :param text: The "HTML" document to parse.
     :type text: str or bytes
 
-    :param kwargs: see :class:`HTMLement` for details.
+    :param str tag: (optional) Name of "tag / element" which is used to filter down "the tree" to a required section.
+    :type tag: str
+
+    :param attrs: (optional) The attributes of the element, that will be used, when searchingfor the required section.
+    :type attrs: dict(str, str)
+
+    :param encoding: (optional) Encoding used, when decoding the source data before feeding it to the parser.
+    :type encoding: str
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises UnicodeDecodeError: If decoding of *text* fails.
     """
-    parser = HTMLement(**kwargs)
+    parser = HTMLement(tag, attrs, encoding)
     parser.feed(text)
     return parser.close()
 
 
-def fromstringlist(sequence, **kwargs):
+def fromstringlist(sequence, tag="", attrs=None, encoding=""):
     """
     Parses an "HTML document" from a sequence of "HTML sections" into an element tree.
 
     :param sequence: A sequence of "HTML sections" to parse.
     :type sequence: list(str or bytes)
 
-    :param kwargs: see :class:`HTMLement` for details.
+    :param str tag: (optional) Name of "tag / element" which is used to filter down "the tree" to a required section.
+    :type tag: str
+
+    :param attrs: (optional) The attributes of the element, that will be used, when searchingfor the required section.
+    :type attrs: dict(str, str)
+
+    :param encoding: (optional) Encoding used, when decoding the source data before feeding it to the parser.
+    :type encoding: str
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
 
     :raises UnicodeDecodeError: If decoding of a section within *sequence* fails.
     """
-    parser = HTMLement(**kwargs)
+    parser = HTMLement(tag, attrs, encoding)
     for text in sequence:
         parser.feed(text)
     return parser.close()
 
 
-def parse(source, **kwargs):
+def parse(source, tag="", attrs=None, encoding=""):
     """
     Load an external "HTML document" into an element tree.
 
     :param source: A filename or file like object containing HTML data.
     :type source: str or io.TextIOBase
 
-    :param kwargs: see :class:`HTMLement` for details.
+    :param str tag: (optional) Name of "tag / element" which is used to filter down "the tree" to a required section.
+    :type tag: str
+
+    :param attrs: (optional) The attributes of the element, that will be used, when searchingfor the required section.
+    :type attrs: dict(str, str)
+
+    :param encoding: (optional) Encoding used, when decoding the source data before feeding it to the parser.
+    :type encoding: str
 
     :return: The root element of the element tree.
     :rtype: xml.etree.ElementTree.Element
@@ -119,7 +140,7 @@ def parse(source, **kwargs):
         close_source = False
 
     try:
-        parser = HTMLement(**kwargs)
+        parser = HTMLement(tag, attrs, encoding)
         while True:
             # Read in 64k at a time
             data = source.read(65536)
