@@ -157,7 +157,7 @@ def test_entity_name_euro_fail():
 
 
 def test_entity_hex_euro_fail():
-    html = "<html><body>cost is &#xD899;49.99</body></html>"
+    html = "<html><body>cost is &#xDB9900;49.99</body></html>"
     root = quick_parsehtml(html)
     assert "€" not in root[0].text
 
