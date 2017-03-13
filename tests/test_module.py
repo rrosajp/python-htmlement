@@ -129,6 +129,27 @@ def test_extra_tag():
     assert Etree.tostring(root, method="html") == b'<html><body></body></html>'
 
 
+# ############################# HTML Test ############################## #
+
+
+def test_entity_name_euro():
+    html = "<html><body>cost is &euro;49.99</body></html>"
+    root = quick_parsehtml(html)
+    assert root[0].text == "cost is €49.99"
+
+
+def test_entity_number_euro():
+    html = "<html><body>cost is &#8364;49.99</body></html>"
+    root = quick_parsehtml(html)
+    assert root[0].text == "cost is €49.99"
+
+
+def test_entity_hex_euro():
+    html = "<html><body>cost is &#x20AC;49.99</body></html>"
+    root = quick_parsehtml(html)
+    assert root[0].text == "cost is €49.99"
+
+
 # ############################# Filter Test ############################## #
 
 

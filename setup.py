@@ -19,7 +19,7 @@ def readme():
 
 
 setup(name='htmlement',
-      version='0.2.1',
+      version='0.2.2',
       description='Pure-Python HTML parser with ElementTree support.',
       long_description=readme(),
       keywords='html html5 parsehtml htmlparser elementtree dom',

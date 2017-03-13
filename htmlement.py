@@ -33,18 +33,29 @@ import re
 
 # Check python version to set the object that can detect non unicode strings
 if sys.version_info >= (3, 0):
-    # noinspection PyCompatibility
+    # noinspection PyUnresolvedReferences,PyCompatibility
     from html.parser import HTMLParser
+    # noinspection PyUnresolvedReferences, PyCompatibility
+    from html.entities import name2codepoint
+    # Python2 compatibility
+    _chr = chr
 else:
     # noinspection PyUnresolvedReferences,PyCompatibility
     from HTMLParser import HTMLParser
+    # noinspection PyUnresolvedReferences, PyCompatibility
+    from htmlentitydefs import name2codepoint
+    # noinspection PyUnresolvedReferences
+    _chr = unichr
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
 __copyright__ = "Copyright (C) 2016 William Forde"
 __author__ = "William Forde"
 __license__ = "MIT"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __credit__ = "Rafael Marmelo"
+
+# Add missing codepoints
+name2codepoint["apos"] = 0x0027
 
 
 def fromstring(text, **kwargs):
@@ -327,8 +338,26 @@ class ParseHTML(HTMLParser):
                 return None
 
     def handle_data(self, data):
-        data = data.strip()
-        if data and self.enabled:
+        if data.strip() and self.enabled:
+            self._data.append(data)
+
+    def handle_entityref(self, data):
+        if self.enabled:
+            try:
+                data = _chr(name2codepoint[data])
+            except KeyError:
+                pass
+            self._data.append(data)
+
+    def handle_charref(self, data):
+        if self.enabled:
+            try:
+                if data[0].lower() == "x":
+                    data = _chr(int(data[1:], 16))
+                else:
+                    data = _chr(int(data))
+            except ValueError:
+                pass
             self._data.append(data)
 
     def handle_comment(self, data):
