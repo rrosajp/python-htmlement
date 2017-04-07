@@ -13,6 +13,9 @@
 .. image:: https://api.codacy.com/project/badge/Grade/6b46406e1aa24b95947b3da6c09a4ab5
     :target: https://www.codacy.com/app/willforde/python-htmlement?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=willforde/python-htmlement&amp;utm_campaign=Badge_Grade
 
+.. image:: http://badge.kloud51.com/pypi/py_versions/htmlement.svg
+    :target: https://pypi.python.org/pypi/htmlement
+
 Installation
 ------------
 ::
