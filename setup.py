@@ -7,15 +7,7 @@ def readme():
     # Get the long description from the README file
     readme_file = path.join(path.abspath(path.dirname(__file__)), "README.rst")
     with _open(readme_file, "rb", encoding='utf-8') as opened_file:
-        line_sequence = opened_file.readlines()
-
-    # Strips out the seealso directive which is unsupported by pypi and causes problems
-    for count, line in enumerate(line_sequence):
-        if "seealso::" in line:
-            # Strip out this line and the next
-            del line_sequence[count]
-            del line_sequence[count]
-            return "".join(line_sequence)
+        return opened_file.read()
 
 
 setup(name='htmlement',
