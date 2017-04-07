@@ -132,15 +132,6 @@ And the output is as follows: ::
 .. seealso::
     More examples can be found in `examples.py`_.
 
-Compatibility
--------------
-* python 2.7
-* python 3.3
-* python 3.4
-* python 3.5
-* python 3.6
-* pypy
-
 .. _html.parser.HTMLParser: https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser
 .. _ElementTree.Element: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
 .. _examples.py: https://github.com/willforde/python-htmlement/blob/master/examples.py
