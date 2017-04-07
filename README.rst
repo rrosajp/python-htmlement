@@ -129,6 +129,7 @@ And the output is as follows: ::
     Tea
     Milk
 
+
 .. seealso::
     More examples can be found in `examples.py`_.
 
