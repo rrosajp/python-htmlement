@@ -129,12 +129,7 @@ And the output is as follows: ::
     Tea
     Milk
 
-
-.. seealso::
-    More examples can be found in `examples.py`_.
-
 .. _html.parser.HTMLParser: https://docs.python.org/3.6/library/html.parser.html#html.parser.HTMLParser
 .. _ElementTree.Element: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element
-.. _examples.py: https://github.com/willforde/python-htmlement/blob/master/examples.py
 .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
 __ XPath_

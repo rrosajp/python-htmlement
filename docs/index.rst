@@ -9,6 +9,9 @@ htmlement Module
 .. include::
     ../README.rst
 
+.. seealso::
+    More examples can be found in `examples.py`_.
+
 API
 ---
 
@@ -22,3 +25,5 @@ https://docs.python.org/2/library/xml.etree.elementtree.html#element-objects
 https://docs.python.org/2/library/xml.etree.elementtree.html#xpath-support
 
 https://github.com/willforde/python-htmlement
+
+.. _examples.py: https://github.com/willforde/python-htmlement/blob/master/examples.py
