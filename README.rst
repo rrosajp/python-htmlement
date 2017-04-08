@@ -16,16 +16,6 @@
 .. image:: http://badge.kloud51.com/pypi/py_versions/htmlement.svg
     :target: https://pypi.python.org/pypi/htmlement
 
-Installation
-------------
-::
-
-    pip install htmlement
-
--or- ::
-
-    pip install git+https://github.com/willforde/python-htmlement.git
-
 Why another Python HTML Parser?
 -------------------------------
 
@@ -47,6 +37,15 @@ A benefit of using "ElementTree" is that it can use a "C implementation" wheneve
 This "HTML Parser" extends `html.parser.HTMLParser`_ to build a tree of `ElementTree.Element`_ instances.
 The returned "root element" natively supports the ElementTree API.
 
+Installation
+------------
+::
+
+    pip install htmlement
+
+-or- ::
+
+    pip install git+https://github.com/willforde/python-htmlement.git
 
 Parsing HTML
 ------------
