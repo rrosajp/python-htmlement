@@ -37,8 +37,8 @@ A benefit of using "ElementTree" is that it can use a "C implementation" wheneve
 This "HTML Parser" extends `html.parser.HTMLParser`_ to build a tree of `ElementTree.Element`_ instances.
 The returned "root element" natively supports the ElementTree API.
 
-Installation
-------------
+Install
+-------
 ::
 
     pip install htmlement

@@ -11,3 +11,4 @@ build/
 .cache/
 .tox/
 .coverage
+docs/_build/
