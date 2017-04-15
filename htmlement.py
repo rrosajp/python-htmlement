@@ -49,10 +49,11 @@ else:
     _chr = unichr
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
+__repo__ = "https://github.com/willforde/python-htmlement"
 __copyright__ = "Copyright (C) 2016 William Forde"
 __author__ = "William Forde"
 __license__ = "MIT"
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 __credit__ = "Rafael Marmelo"
 
 # Add missing codepoints
