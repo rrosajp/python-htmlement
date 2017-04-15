@@ -27,6 +27,7 @@ from __future__ import unicode_literals
 
 # Standard library imports
 from xml.etree import ElementTree as Etree
+from codecs import open as _open
 import warnings
 import sys
 import re
@@ -58,7 +59,7 @@ __credit__ = "Rafael Marmelo"
 name2codepoint["apos"] = 0x0027
 
 
-def fromstring(text, tag="", attrs=None, encoding=""):
+def fromstring(text, tag="", attrs=None, encoding=None):
     """
     Parse's "HTML" document from a string into an element tree.
 
@@ -84,7 +85,7 @@ def fromstring(text, tag="", attrs=None, encoding=""):
     return parser.close()
 
 
-def fromstringlist(sequence, tag="", attrs=None, encoding=""):
+def fromstringlist(sequence, tag="", attrs=None, encoding=None):
     """
     Parses an "HTML document" from a sequence of "HTML sections" into an element tree.
 
@@ -111,7 +112,7 @@ def fromstringlist(sequence, tag="", attrs=None, encoding=""):
     return parser.close()
 
 
-def parse(source, tag="", attrs=None, encoding=""):
+def parse(source, tag="", attrs=None, encoding=None):
     """
     Load an external "HTML document" into an element tree.
 
@@ -134,7 +135,7 @@ def parse(source, tag="", attrs=None, encoding=""):
     """
     # Assume that source is a file pointer if no read methods is found
     if not hasattr(source, "read"):
-        source = open(source, "rb")
+        source = _open(source, "rb", encoding=encoding)
         close_source = True
     else:
         close_source = False
@@ -186,7 +187,7 @@ class HTMLement(object):
     .. _Xpath: https://docs.python.org/3.6/library/xml.etree.elementtree.html#xpath-support
     __ XPath_
     """
-    def __init__(self, tag="", attrs=None, encoding=""):
+    def __init__(self, tag="", attrs=None, encoding=None):
         self._parser = ParseHTML(tag, attrs)
         self.encoding = encoding
         self._finished = False
