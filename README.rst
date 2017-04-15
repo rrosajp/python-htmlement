@@ -1,8 +1,8 @@
 .. image:: https://badge.fury.io/py/htmlement.svg
     :target: https://pypi.python.org/pypi/htmlement
 
-.. image:: https://readthedocs.org/projects/python-htmlement/badge/?version=latest
-    :target: http://python-htmlement.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/python-htmlement/badge/?version=stable
+    :target: http://python-htmlement.readthedocs.io/en/stable/?badge=stable
 
 .. image:: https://travis-ci.org/willforde/python-htmlement.svg?branch=master
     :target: https://travis-ci.org/willforde/python-htmlement
