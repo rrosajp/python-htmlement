@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-htmlement Module
-================
+Welcome to HTMLement's documentation!
+=====================================
 
 .. include::
     ../README.rst
@@ -18,12 +18,10 @@ API
 .. automodule:: htmlement
     :members:
 
-References
-----------
-https://docs.python.org/2/library/xml.etree.elementtree.html#element-objects
+External Links
+--------------
+ElementTree: https://docs.python.org/2/library/xml.etree.elementtree.html
 
-https://docs.python.org/2/library/xml.etree.elementtree.html#xpath-support
-
-https://github.com/willforde/python-htmlement
+Bug Tracker: https://github.com/willforde/python-htmlement/issues
 
 .. _examples.py: https://github.com/willforde/python-htmlement/blob/master/examples.py

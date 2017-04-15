@@ -19,10 +19,10 @@
 .. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
     :target: https://saythanks.io/to/willforde
 
-Why another Python HTML Parser?
--------------------------------
+HTMLement
+---------
 
-There is no "HTML Parser" in the "Python" Standard Library.
+Why another Python HTML Parser? There is no "HTML Parser" in the "Python" Standard Library.
 Actually, there is the `html.parser.HTMLParser`_ that simply "traverses the DOM tree" and allows me to be notified as
 each tag is being parsed. Usually, when "parsing HTML" I want to query its elements and extract data from it.
 
