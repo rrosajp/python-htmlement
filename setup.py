@@ -1,6 +1,7 @@
 from setuptools import setup
 from codecs import open as _open
 from os import path
+import re
 
 
 def readme():
@@ -10,8 +11,19 @@ def readme():
         return opened_file.read()
 
 
+def version(name):
+    with open(name, 'rb') as opened:
+        search_refind = b'__version__ = ["\'](\d+\.\d+\.\d+)["\']'
+        verdata = re.search(search_refind, opened.read())
+        if verdata:
+            data = verdata.group(1)
+            return data.decode()
+        else:
+            raise RuntimeError("Unable to extract version number")
+
+
 setup(name='htmlement',
-      version='0.2.3',
+      version=version('htmlement.py'),
       description='Pure-Python HTML parser with ElementTree support.',
       long_description=readme(),
       keywords='html html5 parsehtml htmlparser elementtree dom',
