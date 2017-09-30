@@ -26,7 +26,6 @@
 from __future__ import unicode_literals
 
 # Standard library imports
-from xml.etree import ElementTree as Etree
 from codecs import open as _open
 import warnings
 import sys
@@ -34,6 +33,7 @@ import re
 
 # Check python version to set the object that can detect non unicode strings
 if sys.version_info >= (3, 0):
+    import xml.etree.ElementTree as Etree
     # noinspection PyUnresolvedReferences,PyCompatibility
     from html.parser import HTMLParser
     # noinspection PyUnresolvedReferences, PyCompatibility
@@ -47,6 +47,14 @@ else:
     from htmlentitydefs import name2codepoint
     # noinspection PyUnresolvedReferences
     _chr = unichr
+
+    try:
+        # This attemps to import the C version of ElementTree
+        import xml.etree.cElementTree as Etree
+        # This will fail if the implementation is broken
+        Etree.Comment("Test for broken cElementTree")
+    except (ImportError, TypeError):
+        import xml.etree.ElementTree as Etree
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
 __repo__ = "https://github.com/willforde/python-htmlement"
