@@ -215,7 +215,7 @@ class HTMLement(object):
         :raises UnicodeDecodeError: If decoding of *data* fails.
         """
         # Skip feeding data into parser if we already have what we want
-        if self._finished is True:
+        if self._finished == 1:
             return None
 
         # Make sure that we have unicode before continuing
@@ -287,7 +287,7 @@ class ParseHTML(HTMLParser):
         if attrs:
             self.attrs = attrs
             for key, value in attrs.copy().items():
-                if value is False:
+                if value == 0:
                     self._unw_attrs.append(key)
                     del attrs[key]
         else:
@@ -399,7 +399,7 @@ class ParseHTML(HTMLParser):
 
     def close(self):
         self._flush()
-        if self.enabled is False:
+        if self.enabled == 0:
             msg = "Unable to find requested section with tag of '{}' and attributes of {}"
             raise RuntimeError(msg.format(self.tag, self.attrs))
         elif self._root is not None:
@@ -442,7 +442,7 @@ class ParseHTML(HTMLParser):
                         # Check for wanted attrs
                         elif key in wanted_attrs:
                             c_value = wanted_attrs[key]
-                            if c_value == value or c_value is True:
+                            if c_value == value or c_value == 1:
                                 # Remove this attribute from the wanted dict of attributes
                                 # to indicate that this attribute has been found
                                 del wanted_attrs[key]
