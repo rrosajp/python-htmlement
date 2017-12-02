@@ -22,23 +22,16 @@
 HTMLement
 ---------
 
-Why another Python HTML Parser? There is no "HTML Parser" in the "Python" Standard Library.
-Actually, there is the `html.parser.HTMLParser`_ that simply "traverses the DOM tree" and allows me to be notified as
-each tag is being parsed. Usually, when "parsing HTML" I want to query its elements and extract data from it.
+HTMLement is a pure Python HTML Parser.
 
-There are a few third party "HTML parsers" available like "lxml", "html5lib" and "beautifulsoup".
-    * "lxml" is the best "parser" available, fast and reliable but since it requires "C libraries", it's not always possible to install.
-    * "html5lib" is a "pure-python library" and is designed to conform to the "WHATWG HTML" specification. But it is very slow at parsing HTML.
-    * "beautifulsoup" is also a "pure-python library" but is considered by most to be "very slow".
-
-The "Object" of this project is to be a "pure-python HTML parser" which is also "faster" than "beautifulsoup".
+The object of this project is to be a "pure-python HTML parser" which is also "faster" than "beautifulsoup".
 And like "beautifulsoup", will also parse invalid html.
-The most simple way to do this is to use `XPath expressions`__.
+
+The most simple way to do this is to use ElementTree `XPath expressions`__.
 Python does support a simple (read limited) XPath engine inside its "ElementTree" module.
 A benefit of using "ElementTree" is that it can use a "C implementation" whenever available.
 
 This "HTML Parser" extends `html.parser.HTMLParser`_ to build a tree of `ElementTree.Element`_ instances.
-The returned "root element" natively supports the ElementTree API.
 
 Install
 -------
