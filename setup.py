@@ -29,7 +29,7 @@ setup(
     name='htmlement',
     version=extract_variable('htmlement.py', '__version__'),
     description='Pure-Python HTML parser with ElementTree support.',
-    long_description=readfile('README.md'),
+    long_description=readfile('README.rst'),
     extras_require={"dev": ["pytest", "pytest-cov"]},
     keywords='html html5 parsehtml htmlparser elementtree dom',
     classifiers=[
