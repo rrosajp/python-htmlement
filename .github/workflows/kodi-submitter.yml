@@ -2,7 +2,8 @@ name: Kodi Addon-Submitter
 
 on:
   push:
-    branches: [ kodi ]
+    tags:
+      - v*
 
 jobs:
   kodi-addon-submitter:
