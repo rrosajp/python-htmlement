@@ -1,32 +1,35 @@
 from setuptools import setup
-from codecs import open as _open
+from codecs import open
 from os import path
 import re
 
-
-def readme():
-    # Get the long description from the README file
-    readme_file = path.join(path.abspath(path.dirname(__file__)), "README.rst")
-    with _open(readme_file, "rb", encoding='utf-8') as opened_file:
-        return opened_file.read()
+# Path to local directory
+here = path.abspath(path.dirname(__file__))
 
 
-def version(name):
-    with open(name, 'rb') as opened:
-        search_refind = b'__version__ = ["\'](\d+\.\d+\.\d+)["\']'
-        verdata = re.search(search_refind, opened.read())
+def readfile(filename):  # type: (str) -> str
+    """Get the long description from the README file"""
+    readme_file = path.join(here, filename)
+    with open(readme_file, "r", encoding="utf-8") as stream:
+        return stream.read()
+
+
+def extract_variable(filename, variable):  # type: (str, str) -> str
+    """Extract the version number from a python file that contains the '__version__' variable."""
+    with open(filename, "r", encoding="utf8") as stream:
+        search_refind = r'{} = ["\'](\d+\.\d+\.\d+)["\']'.format(variable)
+        verdata = re.search(search_refind, stream.read())
         if verdata:
-            data = verdata.group(1)
-            return data.decode()
+            return verdata.group(1)
         else:
             raise RuntimeError("Unable to extract version number")
 
 
 setup(
     name='htmlement',
-    version=version('htmlement.py'),
+    version=extract_variable('htmlement.py', '__version__'),
     description='Pure-Python HTML parser with ElementTree support.',
-    long_description=readme(),
+    long_description=readfile('README.md'),
     extras_require={"dev": ["pytest", "pytest-cov"]},
     keywords='html html5 parsehtml htmlparser elementtree dom',
     classifiers=[
