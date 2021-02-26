@@ -1,0 +1,26 @@
+name: Kodi Addon-Submitter
+
+on:
+  push:
+    branches: [ kodi ]
+
+jobs:
+  kodi-addon-submitter:
+    runs-on: ubuntu-latest
+    name: Kodi addon submitter
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Generate distribution zip and submit to official kodi repository
+      id: kodi-addon-submitter
+      uses: willforde/action-kodi-addon-submitter@master
+      with:
+        kodi-repository: repo-scripts
+        kodi-version: krypton
+        addon-id: script.module.htmlement
+        kodi-matrix: true
+        sub-directory: true
+      env:
+        GH_USERNAME: ${{ github.actor }}
+        GH_TOKEN: ${{secrets.GH_TOKEN}}
+        EMAIL: ${{secrets.EMAIL}}
