@@ -4,20 +4,16 @@
 .. image:: https://readthedocs.org/projects/python-htmlement/badge/?version=stable
     :target: http://python-htmlement.readthedocs.io/en/stable/?badge=stable
 
-.. image:: https://travis-ci.org/willforde/python-htmlement.svg?branch=master
-    :target: https://travis-ci.org/willforde/python-htmlement
+.. image:: https://www.travis-ci.com/willforde/python-htmlement.svg?branch=master
+    :target: https://www.travis-ci.com/willforde/python-htmlement
 
 .. image:: https://coveralls.io/repos/github/willforde/python-htmlement/badge.svg?branch=master
     :target: https://coveralls.io/github/willforde/python-htmlement?branch=master
 
-.. image:: https://api.codacy.com/project/badge/Grade/6b46406e1aa24b95947b3da6c09a4ab5
-    :target: https://www.codacy.com/app/willforde/python-htmlement?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=willforde/python-htmlement&amp;utm_campaign=Badge_Grade
+.. image:: https://api.codeclimate.com/v1/badges/7d593426acc83cba5ef7/maintainability
+   :target: https://codeclimate.com/github/willforde/python-htmlement/maintainability
+   :alt: Maintainability
 
-.. image:: https://img.shields.io/pypi/pyversions/htmlement.svg
-    :target: https://pypi.python.org/pypi/htmlement
-
-.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
-    :target: https://saythanks.io/to/willforde
 
 HTMLement
 ---------
