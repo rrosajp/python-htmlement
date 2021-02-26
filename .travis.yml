@@ -1,25 +1,26 @@
 language: python
+arch: amd64
+os: linux
+dist: bionic  # Has python 2.7, 3.6, 3.7, 3.8 pre installed
+
 matrix:
   include:
     - python: "2.7"
       env: TOXENV=py27
-    - python: "3.4"
-      env: TOXENV=py34
-    - python: "3.5"
-      env: TOXENV=py35
+      stage: Tests
     - python: "3.6"
       env: TOXENV=py36
     - python: "3.7"
       env: TOXENV=py37
-      dist: xenial
-      sudo: true
-
-sudo: false
+    - python: "3.8"
+      env: TOXENV=py38
+    - python: "3.9"
+      env: TOXENV=py39
+    - env: TOXENV=flake8
 
 install:
   - pip install coveralls
   - pip install tox
 
 script: tox
-
 after_success: coveralls
