@@ -130,7 +130,7 @@ def test_extra_tag():
 
 
 def test_find_empty_attribute():
-    # Check whether we can find an element with an empty attribute
+    # Check whether we can find an element with an empty-valued attribute
     html = "<html><body><form autofocus><input type='checkbox' checked></form></body></html>"
     form = quick_parse_filter(html, "form", {"autofocus": True})
     assert "autofocus" in form.attrib
