@@ -330,7 +330,7 @@ class ParseHTML(HTMLParser):
         # Add tag element to tree if we have no filter or that the filter matches
         if enabled or self._search(tag, attrs):
             # Convert attrs to dictionary
-            attrs = {k: v or str() for k, v in attrs}
+            attrs = {k: v or "" for k, v in attrs}
             self._flush()
 
             # Create the new element
