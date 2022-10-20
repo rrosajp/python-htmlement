@@ -70,7 +70,7 @@ else:
         import xml.etree.ElementTree as Etree
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # Add missing codepoints
 name2codepoint["apos"] = 0x0027
