@@ -129,6 +129,14 @@ def test_extra_tag():
     assert Etree.tostring(root, method="html") == b'<html><body></body></html>'
 
 
+def test_find_empty_attribute():
+    # Check whether we can find an element with an empty-valued attribute
+    html = "<html><body><form autofocus><input type='checkbox' checked></form></body></html>"
+    form = quick_parse_filter(html, "form", {"autofocus": True})
+    assert "autofocus" in form.attrib
+    assert form.find(".//input[@checked]") is not None
+
+
 # ############################# HTML Entity ############################## #
 
 
