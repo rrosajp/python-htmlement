@@ -16,6 +16,8 @@ matrix:
       env: TOXENV=py38
     - python: "3.9"
       env: TOXENV=py39
+    - python: "3.10"
+      env: TOXENV=py39
     - env: TOXENV=flake8
 
 install:
