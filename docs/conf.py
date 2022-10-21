@@ -21,12 +21,11 @@ import os
 sys.path.insert(0, os.path.abspath('../'))
 
 # Fetch version number
-from htmlement import __version__, __copyright__, __author__
+from htmlement import __version__
 
 # General information about the project.
 project = 'HTMLement'
-copyright = __copyright__
-author = __author__
+author = "William Forde"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
