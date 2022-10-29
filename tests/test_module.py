@@ -179,6 +179,12 @@ def test_text_iterator():
     body = root.find(".//body")
     assert "".join(body.itertext()) == "sample text content"
 
+def test_text_iterator_unclosed_tag():
+    html = "<html><body><span>hello <div>to <div>the <div>world!</span></body><footer>unrelated</footer></html>"
+    root = quick_parsehtml(html)
+    body = root.find(".//body")
+    assert "".join(body.itertext()) == "hello to the world!"
+
 
 # ############################# Filter Test ############################## #
 
