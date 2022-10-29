@@ -170,6 +170,16 @@ def test_entity_hex_euro_fail():
     assert "€" not in root[0].text
 
 
+# ############################# Text Content ############################# #
+
+
+def test_text_iterator():
+    html = "<html><body>sample text content</body></html>"
+    root = quick_parsehtml(html)
+    body = root.find(".//body")
+    assert "".join(body.itertext()) == "sample text content"
+
+
 # ############################# Filter Test ############################## #
 
 
