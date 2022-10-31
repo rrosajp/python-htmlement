@@ -363,15 +363,17 @@ class ParseHTML(HTMLParser):
                 if elem is _root:
                     raise EOFError
 
-            # If the previous element is what we actually have then the expected element was not
+            # If a previous element is what we actually have then the expected element was not
             # properly closed so we must close that before closing what we have now
-            elif len(_elem) >= 2 and _elem[-2].tag == tag:
+            elif len(_elem) >= 2 and any(_item.tag == tag for _item in _elem):
                 self._flush()
                 self._tail = 1
-                for _ in range(2):
+                while True:
                     self._last = elem = _elem.pop()
-                    if elem is _root:
-                        raise EOFError
+                    if elem.tag == tag:
+                        break
+                if elem is _root:
+                    raise EOFError
             else:
                 # Unable to match the tag to an element, ignoring it
                 return None
