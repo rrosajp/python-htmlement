@@ -1,14 +1,14 @@
 .. image:: https://badge.fury.io/py/htmlement.svg
-    :target: https://pypi.python.org/pypi/htmlement
+   :target: https://pypi.python.org/pypi/htmlement
 
 .. image:: https://readthedocs.org/projects/python-htmlement/badge/?version=stable
-    :target: http://python-htmlement.readthedocs.io/en/stable/?badge=stable
+   :target: http://python-htmlement.readthedocs.io/en/stable/?badge=stable
 
-.. image:: https://www.travis-ci.com/willforde/python-htmlement.svg?branch=master
-    :target: https://www.travis-ci.com/willforde/python-htmlement
+.. image:: https://github.com/willforde/python-htmlement/actions/workflows/tests.yml/badge.svg?branch=master&event=push
+   :target: https://github.com/willforde/python-htmlement/actions
 
-.. image:: https://coveralls.io/repos/github/willforde/python-htmlement/badge.svg?branch=master
-    :target: https://coveralls.io/github/willforde/python-htmlement?branch=master
+.. image:: https://codecov.io/gh/willforde/python-htmlement/branch/master/graph/badge.svg?token=D5EKKLIVBP
+   :target: https://codecov.io/gh/willforde/python-htmlement
 
 .. image:: https://api.codeclimate.com/v1/badges/7d593426acc83cba5ef7/maintainability
    :target: https://codeclimate.com/github/willforde/python-htmlement/maintainability
