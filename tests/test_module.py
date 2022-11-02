@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # Python 2 compatibility
-from __future__ import unicode_literals
 import xml.etree.ElementTree as Etree
 import htmlement
 import examples
@@ -56,7 +55,7 @@ def test_basic_partial():
 
 
 def test_nohtml_tree():
-    # Check the the missing html starting tag is created
+    # Check that the missing html starting tag is created
     html = "<body></body>"
     root = quick_parsehtml(html)
     assert root.tag == "html"
@@ -178,6 +177,7 @@ def test_text_iterator():
     root = quick_parsehtml(html)
     body = root.find(".//body")
     assert "".join(body.itertext()) == "sample text content"
+
 
 def test_text_iterator_unclosed_tag():
     html = "<html><body><div>hello <span>to <span>the <span>world!</div></body><footer>unrelated</footer></html>"

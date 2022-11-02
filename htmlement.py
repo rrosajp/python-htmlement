@@ -29,50 +29,25 @@ Simple lightweight HTML parser with XPath support.
 
 Github: https://github.com/willforde/python-htmlement
 Documentation: https://python-htmlement.readthedocs.io/en/stable/?badge=stable
-Testing: https://www.travis-ci.com/willforde/python-htmlement
-Coverage: https://coveralls.io/github/willforde/python-htmlement?branch=master
+Testing: https://github.com/willforde/python-htmlement/actions
+Coverage: https://codecov.io/gh/willforde/python-htmlement
 Maintainability: https://codeclimate.com/github/willforde/python-htmlement/maintainability
 """
 
-
-# Python 2 compatibility
-from __future__ import unicode_literals
-
-# Standard library imports
-from codecs import open as _open
+# Standard Lib
+import xml.etree.ElementTree as Etree
 import warnings
-import sys
 import re
 
-# Check python version to set the object that can detect non unicode strings
-if sys.version_info >= (3, 0):
-    import xml.etree.ElementTree as Etree
-    # noinspection PyUnresolvedReferences,PyCompatibility
-    from html.parser import HTMLParser
-    # noinspection PyUnresolvedReferences, PyCompatibility
-    from html.entities import name2codepoint
-    # Python2 compatibility
-    _chr = chr
-else:
-    # noinspection PyUnresolvedReferences,PyCompatibility
-    from HTMLParser import HTMLParser
-    # noinspection PyUnresolvedReferences, PyCompatibility
-    from htmlentitydefs import name2codepoint
-    # noinspection PyUnresolvedReferences
-    _chr = unichr
-
-    try:
-        # This attemps to import the C version of ElementTree
-        import xml.etree.cElementTree as Etree
-        # This will fail if the implementation is broken
-        Etree.Comment("Test for broken cElementTree")
-    except (ImportError, TypeError):
-        import xml.etree.ElementTree as Etree
+# HTML Parser
+from html.entities import name2codepoint
+from html.parser import HTMLParser
 
 __all__ = ["HTMLement", "fromstring", "fromstringlist", "parse"]
-__version__ = "1.0.1"
+__version__ = "2.0.0"
 
 # Add missing codepoints
+# TODO: This may no longer be required
 name2codepoint["apos"] = 0x0027
 
 
@@ -152,7 +127,7 @@ def parse(source, tag="", attrs=None, encoding=None):
     """
     # Assume that source is a file pointer if no read methods is found
     if not hasattr(source, "read"):
-        source = _open(source, "rb", encoding=encoding)
+        source = open(source, "rb", encoding=encoding)
         close_source = True
     else:
         close_source = False
@@ -385,7 +360,7 @@ class ParseHTML(HTMLParser):
     def handle_entityref(self, name):
         if self.enabled:
             try:
-                name = _chr(name2codepoint[name])
+                name = chr(name2codepoint[name])
             except KeyError:
                 pass
             self._data.append(name)
@@ -394,9 +369,9 @@ class ParseHTML(HTMLParser):
         if self.enabled:
             try:
                 if name[0].lower() == "x":
-                    name = _chr(int(name[1:], 16))
+                    name = chr(int(name[1:], 16))
                 else:
-                    name = _chr(int(name))
+                    name = chr(int(name))
             except ValueError:
                 pass
             self._data.append(name)
