@@ -127,7 +127,7 @@ def parse(source, tag="", attrs=None, encoding=None):
     """
     # Assume that source is a file pointer if no read methods is found
     if not hasattr(source, "read"):
-        source = open(source, "rb", encoding=encoding)
+        source = open(source, "r", encoding=encoding)
         close_source = True
     else:
         close_source = False
